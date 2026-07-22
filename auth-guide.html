@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Auth Flow Guide — Login, Register, Logout</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.7;
+            padding: 2rem;
+        }
+
+        .container { max-width: 960px; margin: 0 auto; }
+
+        h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        /* ── Navigation Tabs ── */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .tab:hover { border-color: #3b82f6; color: #e2e8f0; }
+        .tab.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        /* ── Sections ── */
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: #f1f5f9;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #1e293b;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #93c5fd;
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        h4 {
+            font-size: 1rem;
+            color: #a78bfa;
+            margin: 1rem 0 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .highlight {
+            background: #1e293b;
+            border-left: 3px solid #3b82f6;
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+            color: #e2e8f0;
+        }
+
+        .highlight.warn {
+            border-left-color: #f59e0b;
+        }
+
+        .highlight.success {
+            border-left-color: #22c55e;
+        }
+
+        /* ── Code Blocks ── */
+        .code-block {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            margin: 1.25rem 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 1rem;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+            font-size: 0.8rem;
+        }
+
+        .code-filename {
+            color: #94a3b8;
+            font-family: monospace;
+        }
+
+        .code-lang {
+            color: #3b82f6;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+        }
+
+        pre {
+            padding: 1.25rem;
+            overflow-x: auto;
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+        }
+
+        /* Inline code */
+        .inline-code {
+            background: #1e293b;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+            color: #f472b6;
+            font-family: monospace;
+        }
+
+        /* Syntax colors */
+        .kw { color: #c084fc; }    /* keywords */
+        .fn { color: #60a5fa; }    /* functions */
+        .str { color: #86efac; }   /* strings */
+        .cm { color: #64748b; }    /* comments */
+        .num { color: #fb923c; }   /* numbers */
+        .type { color: #38bdf8; }  /* types */
+        .op { color: #f472b6; }    /* operators */
+        .tag { color: #f87171; }   /* HTML/JSX tags */
+        .attr { color: #fbbf24; }  /* attributes */
+
+        /* ── Steps ── */
+        .step {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.25rem 0;
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #3b82f6;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* ── Flow Diagram ── */
+        .flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 1.5rem 0;
+        }
+
+        .flow-step {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+        }
+
+        .flow-step.register { border-color: #3b82f6; }
+        .flow-step.login { border-color: #22c55e; }
+        .flow-step.logout { border-color: #f59e0b; }
+        .flow-step.error { border-color: #ef4444; }
+
+        .flow-arrow {
+            text-align: center;
+            color: #475569;
+            font-size: 1.2rem;
+            padding: 0.3rem 0;
+        }
+
+        .flow-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        /* ── File Tree ── */
+        .file-tree {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1.25rem;
+            font-family: monospace;
+            font-size: 0.88rem;
+            line-height: 1.8;
+            margin: 1.25rem 0;
+        }
+
+        .file-tree .folder { color: #fbbf24; }
+        .file-tree .file { color: #60a5fa; }
+        .file-tree .desc { color: #64748b; }
+
+        /* ── Table ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: #1e293b;
+            color: #93c5fd;
+            font-weight: 600;
+        }
+
+        td { color: #cbd5e1; }
+
+        tr:hover td { background: rgba(59, 130, 246, 0.05); }
+
+        /* ── Diagram boxes ── */
+        .diagram {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: 0.5rem;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+
+        .diagram-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .diagram-box.title {
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .diagram-box small {
+            color: #64748b;
+            font-size: 0.78rem;
+        }
+
+        .diagram-arrow {
+            color: #475569;
+            font-size: 1.4rem;
+        }
+
+        /* ── Lists ── */
+        ul, ol {
+            margin: 0.75rem 0 1rem 1.5rem;
+            color: #cbd5e1;
+        }
+
+        li { margin-bottom: 0.4rem; }
+
+        /* ── Divider ── */
+        hr {
+            border: none;
+            border-top: 1px solid #1e293b;
+            margin: 2rem 0;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            color: #475569;
+            font-size: 0.85rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Complete Auth Flow Guide</h1>
+        <p class="subtitle">Login, Register, Logout — from zero to full understanding. Every line explained.</p>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- NAVIGATION TABS -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="tabs">
+            <button class="tab active" onclick="showSection('overview')">Overview</button>
+            <button class="tab" onclick="showSection('architecture')">Architecture</button>
+            <button class="tab" onclick="showSection('register')">Register</button>
+            <button class="tab" onclick="showSection('login')">Login</button>
+            <button class="tab" onclick="showSection('logout')">Logout</button>
+            <button class="tab" onclick="showSection('guard')">Route Guard</button>
+            <button class="tab" onclick="showSection('working')">Live Demo</button>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECTION 1: OVERVIEW -->
+        <!-- ═══════════════════════════════════════ -->
+        <div id="overview" class="section active">
+            <h2>1. What is Authentication?</h2>
+            <p>Authentication is the process of verifying <strong>who you are</strong>. When you register, you create an identity. When you log in, you prove that identity. When you log out, you destroy the session.</p>
+
+            <div class="diagram">
+                <div class="diagram-box register">
+                    <strong>Register</strong>
+                    <small>Create account</small>
+                </div>
+                <div class="diagram-arrow">&#8594;</div>
+                <div class="diagram-box login">
+                    <strong>Login</strong>
+                    <small>Prove identity</small>
+                </div>
+                <div class="diagram-arrow">&#8594;</div>
+                <div class="diagram-box logout">
+                    <strong>Logout</strong>
+                    <small>Destroy session</small>
+                </div>
+            </div>
+
+            <h2>The Three States</h2>
+            <table>
+                <tr><th>State</th><th>user value</th><th>Token</th><th>Screen shown</th></tr>
+                <tr><td>Not logged in</td><td><code class="inline-code">null</code></td><td>None</td><td>Login / Register</td></tr>
+                <tr><td>Logged in</td><td><code class="inline-code">{id, email, name}</code></td><td>JWT token stored</td><td>Home / Tabs</td></tr>
+                <tr><td>Logged out</td><td><code class="inline-code">null</code></td><td>Removed</td><td>Login</td></tr>
+            </table>
+
+            <h2>Key Concepts</h2>
+            <div class="highlight">
+                <strong>Token (JWT):</strong> A string the server gives you after login. You store it and send it with every request to prove "I am who I say I am." Think of it like an ID card.
+            </div>
+            <div class="highlight">
+                <strong>Context:</strong> A React feature that lets you share data (like <code class="inline-code">user</code> and <code class="inline-code">token</code>) with every component in your app without passing props through every level.
+            </div>
+            <div class="highlight">
+                <strong>Persistence:</strong> Tokens survive app restarts because they're saved to <code class="inline-code">SecureStore</code> (native) or <code class="inline-code">localStorage</code> (web).
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECTION 2: ARCHITECTURE -->
+        <!-- ═══════════════════════════════════════ -->
+        <div id="architecture" class="section">
+            <h2>2. Project Architecture</h2>
+            <p>Every file has exactly one job. Here's the complete structure:</p>
+
+            <div class="file-tree">
+<span class="folder">app/</span>                    <span class="desc">← Routes (file-based routing)</span>
+  <span class="file">_layout.tsx</span>              <span class="desc">← Root layout: wraps everything in AuthProvider</span>
+  <span class="file">index.tsx</span>                <span class="desc">← Entry gate: checks auth, redirects to login or home</span>
+  <span class="folder">(auth)/</span>                  <span class="desc">← Group: unauthenticated screens</span>
+    <span class="file">login.tsx</span>            <span class="desc">← Login screen</span>
+    <span class="file">register.tsx</span>         <span class="desc">← Register screen</span>
+  <span class="folder">(tabs)/</span>                  <span class="desc">← Group: authenticated screens</span>
+    <span class="file">_layout.tsx</span>          <span class="desc">← Tab navigator</span>
+    <span class="file">index.tsx</span>            <span class="desc">← Home screen (first tab)</span>
+
+<span class="folder">context/</span>                  <span class="desc">← Global state</span>
+  <span class="file">authContext.tsx</span>         <span class="desc">← Creates auth state + exposes login/register/logout</span>
+
+<span class="folder">hooks/</span>                    <span class="desc">← Reusable stateful logic</span>
+  <span class="file">useAuth.ts</span>             <span class="desc">← Shortcut to consume auth context</span>
+
+<span class="folder">services/</span>                 <span class="desc">← API communication</span>
+  <span class="file">auth.ts</span>                <span class="desc">← Auth API calls (login, register, getProfile)</span>
+  <span class="file">api.ts</span>                 <span class="desc">← Generic HTTP client with token header</span>
+
+<span class="folder">types/</span>                    <span class="desc">← TypeScript definitions</span>
+  <span class="file">auth.ts</span>                <span class="desc">← User, AuthResponse, AuthContextType interfaces</span>
+
+<span class="folder">utils/</span>                    <span class="desc">← Pure helper functions</span>
+  <span class="file">storage.ts</span>             <span class="desc">← Token persistence (SecureStore / localStorage)</span>
+  <span class="file">validator.ts</span>           <span class="desc">← Input validation (email, password)</span>
+            </div>
+
+            <h3>Data Flow Diagram</h3>
+            <div class="highlight">
+<pre style="margin:0; padding:0;">
+Screen ──calls──▸ Hook ──reads──▸ Context ──calls──▸ Service ──uses──▸ Util
+(app/)         (hooks/)        (context/)         (services/)       (utils/)
+UI Layer       Logic Layer     State Layer        Network Layer     Storage Layer
+</pre>
+            </div>
+
+            <h3>Why Each Layer Exists</h3>
+            <table>
+                <tr><th>Layer</th><th>What it does</th><th>Example</th></tr>
+                <tr><td>App (routes)</td><td>Defines screens and navigation</td><td><code class="inline-code">login.tsx</code></td></tr>
+                <tr><td>Hook</td><td>Encapsulates logic for reuse</td><td><code class="inline-code">useAuth()</code></td></tr>
+                <tr><td>Context</td><td>Shares state across components</td><td><code class="inline-code">AuthProvider</code></td></tr>
+                <tr><td>Service</td><td>Communicates with backend</td><td><code class="inline-code">loginUser()</code></td></tr>
+                <tr><td>Util</td><td>Pure functions, no side effects</td><td><code class="inline-code">setToken()</code></td></tr>
+                <tr><td>Type</td><td>Defines data shapes</td><td><code class="inline-code">User</code> interface</td></tr>
+            </table>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECTION 3: REGISTER -->
+        <!-- ═══════════════════════════════════════ -->
+        <div id="register" class="section">
+            <h2>3. Register (Sign Up) Flow</h2>
+
+            <h3>Step-by-Step Flow</h3>
+            <div class="flow">
+                <div class="flow-step register">
+                    <div class="flow-label">Step 1</div>
+                    User types name, email, password in form
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step register">
+                    <div class="flow-label">Step 2</div>
+                    User taps "Register" button
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step register">
+                    <div class="flow-label">Step 3</div>
+                    <code class="inline-code">handleRegister()</code> is called
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step register">
+                    <div class="flow-label">Step 4</div>
+                    <code class="inline-code">register(name, email, password)</code> from auth context is called
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step register">
+                    <div class="flow-label">Step 5</div>
+                    Auth context calls <code class="inline-code">registerUser()</code> service
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step register">
+                    <div class="flow-label">Step 6</div>
+                    Service returns <code class="inline-code">{ token, user }</code>
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step register">
+                    <div class="flow-label">Step 7</div>
+                    Context saves token via <code class="inline-code">setToken()</code> and sets user state
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step register">
+                    <div class="flow-label">Step 8</div>
+                    Screen navigates to <code class="inline-code">/(tabs)</code>
+                </div>
+            </div>
+
+            <h3>Code: Register Screen</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">app/(auth)/register.tsx</span>
+                    <span class="code-lang">TSX</span>
+                </div>
+                <pre><code><span class="kw">import</span> { <span class="fn">useState</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> { <span class="type">View</span>, <span class="type">Text</span>, <span class="type">TextInput</span>, <span class="type">TouchableOpacity</span> } <span class="kw">from</span> <span class="str">'react-native'</span>;
+<span class="kw">import</span> { <span class="type">Link</span>, <span class="fn">useRouter</span> } <span class="kw">from</span> <span class="str">'expo-router'</span>;
+<span class="kw">import</span> { <span class="fn">useAuth</span> } <span class="kw">from</span> <span class="str">'../../hooks/useAuth'</span>;
+
+<span class="kw">export default function</span> <span class="fn">Register</span>() {
+    <span class="cm">// Form state — holds what the user types</span>
+    <span class="kw">const</span> [name, setName] = <span class="fn">useState</span>(<span class="str">''</span>);
+    <span class="kw">const</span> [email, setEmail] = <span class="fn">useState</span>(<span class="str">''</span>);
+    <span class="kw">const</span> [password, setPassword] = <span class="fn">useState</span>(<span class="str">''</span>);
+    <span class="kw">const</span> [error, setError] = <span class="fn">useState</span>(<span class="str">''</span>);
+
+    <span class="cm">// Get the register function from auth context</span>
+    <span class="kw">const</span> { register } = <span class="fn">useAuth</span>();
+
+    <span class="cm">// Get the router for navigation</span>
+    <span class="kw">const</span> router = <span class="fn">useRouter</span>();
+
+    <span class="cm">// Called when user taps "Register"</span>
+    <span class="kw">const</span> <span class="fn">handleRegister</span> = <span class="kw">async</span> () =&gt; {
+        <span class="kw">try</span> {
+            <span class="fn">setError</span>(<span class="str">''</span>);                <span class="cm">// Clear old errors</span>
+            <span class="kw">await</span> <span class="fn">register</span>(name, email, password); <span class="cm">// Call auth context</span>
+            <span class="cm">// register() saves token + sets user in context</span>
+            router.<span class="fn">replace</span>(<span class="str">'/(tabs)'</span>);   <span class="cm">// Navigate to home</span>
+        } <span class="kw">catch</span> (err) {
+            <span class="fn">setError</span>(<span class="str">'Registration failed'</span>); <span class="cm">// Show error to user</span>
+        }
+    };
+
+    <span class="kw">return</span> (
+        <span class="tag">&lt;View&gt;</span>
+            <span class="tag">&lt;TextInput</span> <span class="attr">placeholder</span>=<span class="str">"Name"</span> <span class="attr">value</span>={name} <span class="attr">onChangeText</span>={setName} <span class="tag">/&gt;</span>
+            <span class="tag">&lt;TextInput</span> <span class="attr">placeholder</span>=<span class="str">"Email"</span> <span class="attr">value</span>={email} <span class="attr">onChangeText</span>={setEmail} <span class="tag">/&gt;</span>
+            <span class="tag">&lt;TextInput</span> <span class="attr">placeholder</span>=<span class="str">"Password"</span> <span class="attr">value</span>={password} <span class="attr">onChangeText</span>={setPassword} <span class="tag">/&gt;</span>
+            <span class="tag">&lt;TouchableOpacity</span> <span class="attr">onPress</span>={handleRegister}<span class="tag">&gt;</span>
+                <span class="tag">&lt;Text&gt;</span>Register<span class="tag">&lt;/Text&gt;</span>
+            <span class="tag">&lt;/TouchableOpacity&gt;</span>
+        <span class="tag">&lt;/View&gt;</span>
+    );
+}</code></pre>
+            </div>
+
+            <h3>Code: Auth Context Register Function</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">context/authContext.tsx</span>
+                    <span class="code-lang">TSX</span>
+                </div>
+                <pre><code><span class="cm">// This runs when the screen calls register(name, email, password)</span>
+<span class="kw">const</span> <span class="fn">register</span> = <span class="kw">async</span> (name: <span class="type">string</span>, email: <span class="type">string</span>, password: <span class="type">string</span>) =&gt; {
+    <span class="cm">// Step 1: Call the service (API call)</span>
+    <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">registerUser</span>(name, email, password);
+
+    <span class="cm">// Step 2: Save the token to storage (persists across restarts)</span>
+    <span class="kw">await</span> <span class="fn">setToken</span>(response.token);
+
+    <span class="cm">// Step 3: Set the user in state (triggers re-render)</span>
+    <span class="fn">setUser</span>(response.user);
+    <span class="cm">// After this, isAuthenticated becomes true</span>
+    <span class="cm">// Any component reading user/isAuthenticated will re-render</span>
+};</code></pre>
+            </div>
+
+            <h3>Code: Service Layer</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">services/auth.ts</span>
+                    <span class="code-lang">TS</span>
+                </div>
+                <pre><code><span class="kw">export async function</span> <span class="fn">registerUser</span>(
+    name: <span class="type">string</span>,
+    email: <span class="type">string</span>,
+    password: <span class="type">string</span>
+): <span class="type">Promise</span>&lt;<span class="type">AuthResponse</span>&gt; {
+    <span class="kw">await</span> <span class="fn">delay</span>(<span class="num">1000</span>); <span class="cm">// Simulate network delay</span>
+
+    <span class="cm">// In real apps, this would be a POST request to /api/register</span>
+    <span class="cm">// fetch('/api/register', { method: 'POST', body: JSON.stringify({name, email, password}) })</span>
+
+    <span class="kw">return</span> {
+        token: <span class="str">'mock-jwt-token-'</span> + Date.<span class="fn">now</span>(),
+        user: { id: <span class="str">'1'</span>, email, name }
+    };
+}</code></pre>
+            </div>
+
+            <h3>Code: Storage Utility</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">utils/storage.ts</span>
+                    <span class="code-lang">TS</span>
+                </div>
+                <pre><code><span class="kw">export async function</span> <span class="fn">setToken</span>(token: <span class="type">string</span>) {
+    <span class="kw">if</span> (isWeb) {
+        <span class="cm">// Web: use localStorage (accessible via JS)</span>
+        localStorage.<span class="fn">setItem</span>(<span class="str">'authToken'</span>, token);
+    } <span class="kw">else</span> {
+        <span class="cm">// Native: use SecureStore (encrypted, secure)</span>
+        <span class="kw">await</span> SecureStore.<span class="fn">setItemAsync</span>(<span class="str">'authToken'</span>, token);
+    }
+}</code></pre>
+            </div>
+
+            <div class="highlight success">
+                <strong>Register Complete:</strong> After all 8 steps, the user is logged in, the token is stored, and they see the home screen.
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECTION 4: LOGIN -->
+        <!-- ═══════════════════════════════════════ -->
+        <div id="login" class="section">
+            <h2>4. Login (Sign In) Flow</h2>
+            <p>Login is almost identical to register — the only difference is you verify existing credentials instead of creating new ones.</p>
+
+            <h3>Step-by-Step Flow</h3>
+            <div class="flow">
+                <div class="flow-step login">
+                    <div class="flow-label">Step 1</div>
+                    User types email and password
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step login">
+                    <div class="flow-label">Step 2</div>
+                    User taps "Login" button
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step login">
+                    <div class="flow-label">Step 3</div>
+                    <code class="inline-code">handleLogin()</code> is called
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step login">
+                    <div class="flow-label">Step 4</div>
+                    Auth context calls <code class="inline-code">loginUser(email, password)</code>
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step login">
+                    <div class="flow-label">Step 5</div>
+                    Service validates credentials, returns <code class="inline-code">{ token, user }</code>
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step login">
+                    <div class="flow-label">Step 6</div>
+                    Context saves token + sets user
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step login">
+                    <div class="flow-label">Step 7</div>
+                    Screen navigates to <code class="inline-code">/(tabs)</code>
+                </div>
+            </div>
+
+            <h3>Code: Login Screen</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">app/(auth)/login.tsx</span>
+                    <span class="code-lang">TSX</span>
+                </div>
+                <pre><code><span class="kw">export default function</span> <span class="fn">Login</span>() {
+    <span class="kw">const</span> [email, setEmail] = <span class="fn">useState</span>(<span class="str">''</span>);
+    <span class="kw">const</span> [password, setPassword] = <span class="fn">useState</span>(<span class="str">''</span>);
+    <span class="kw">const</span> [error, setError] = <span class="fn">useState</span>(<span class="str">''</span>);
+    <span class="kw">const</span> { login } = <span class="fn">useAuth</span>();
+    <span class="kw">const</span> router = <span class="fn">useRouter</span>();
+
+    <span class="kw">const</span> <span class="fn">handleLogin</span> = <span class="kw">async</span> () =&gt; {
+        <span class="kw">try</span> {
+            <span class="fn">setError</span>(<span class="str">''</span>);
+            <span class="kw">await</span> <span class="fn">login</span>(email, password);  <span class="cm">// Call auth context</span>
+            <span class="cm">// login() saves token + sets user in context</span>
+            router.<span class="fn">replace</span>(<span class="str">'/(tabs)'</span>);     <span class="cm">// Navigate to home</span>
+        } <span class="kw">catch</span> {
+            <span class="fn">setError</span>(<span class="str">'Invalid email or password'</span>);
+        }
+    };
+
+    <span class="kw">return</span> (
+        <span class="tag">&lt;View&gt;</span>
+            <span class="tag">&lt;TextInput</span> <span class="attr">placeholder</span>=<span class="str">"Email"</span> <span class="attr">value</span>={email} <span class="attr">onChangeText</span>={setEmail} <span class="tag">/&gt;</span>
+            <span class="tag">&lt;TextInput</span> <span class="attr">placeholder</span>=<span class="str">"Password"</span> <span class="attr">value</span>={password} <span class="attr">onChangeText</span>={setPassword} <span class="tag">/&gt;</span>
+            <span class="tag">&lt;TouchableOpacity</span> <span class="attr">onPress</span>={handleLogin}<span class="tag">&gt;</span>
+                <span class="tag">&lt;Text&gt;</span>Login<span class="tag">&lt;/Text&gt;</span>
+            <span class="tag">&lt;/TouchableOpacity&gt;</span>
+        <span class="tag">&lt;/View&gt;</span>
+    );
+}</code></pre>
+            </div>
+
+            <h3>Code: Auth Context Login Function</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">context/authContext.tsx</span>
+                    <span class="code-lang">TSX</span>
+                </div>
+                <pre><code><span class="kw">const</span> <span class="fn">login</span> = <span class="kw">async</span> (email: <span class="type">string</span>, password: <span class="type">string</span>) =&gt; {
+    <span class="cm">// Step 1: Call the service (validates credentials)</span>
+    <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">loginUser</span>(email, password);
+
+    <span class="cm">// Step 2: Save token to storage</span>
+    <span class="kw">await</span> <span class="fn">setToken</span>(response.token);
+
+    <span class="cm">// Step 3: Set user in state</span>
+    <span class="fn">setUser</span>(response.user);
+};</code></pre>
+            </div>
+
+            <h3>Code: Service with Validation</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">services/auth.ts</span>
+                    <span class="code-lang">TS</span>
+                </div>
+                <pre><code><span class="kw">export async function</span> <span class="fn">loginUser</span>(
+    email: <span class="type">string</span>,
+    password: <span class="type">string</span>
+): <span class="type">Promise</span>&lt;<span class="type">AuthResponse</span>&gt; {
+    <span class="kw">await</span> <span class="fn">delay</span>(<span class="num">1000</span>);
+
+    <span class="cm">// Mock validation: password must be "password"</span>
+    <span class="kw">if</span> (password !== <span class="str">'password'</span>) {
+        <span class="kw">throw new</span> <span class="type">Error</span>(<span class="str">'Invalid email or password'</span>);
+        <span class="cm">// This error bubbles up to handleLogin()'s catch block</span>
+    }
+
+    <span class="kw">return</span> {
+        token: <span class="str">'mock-jwt-token-'</span> + Date.<span class="fn">now</span>(),
+        user: { id: <span class="str">'1'</span>, email, name: email.<span class="fn">split</span>(<span class="str">'@'</span>)[<span class="num">0</span>] }
+    };
+}</code></pre>
+            </div>
+
+            <div class="highlight warn">
+                <strong>Key difference from register:</strong> Login validates that the user exists. If credentials are wrong, it throws an error. Register always succeeds (in this mock).
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECTION 5: LOGOUT -->
+        <!-- ═══════════════════════════════════════ -->
+        <div id="logout" class="section">
+            <h2>5. Logout Flow</h2>
+            <p>Logout is the simplest operation — it destroys the session and sends the user back to login.</p>
+
+            <h3>Step-by-Step Flow</h3>
+            <div class="flow">
+                <div class="flow-step logout">
+                    <div class="flow-label">Step 1</div>
+                    User taps "Logout" button
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step logout">
+                    <div class="flow-label">Step 2</div>
+                    <code class="inline-code">logout()</code> from auth context is called
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step logout">
+                    <div class="flow-label">Step 3</div>
+                    Token is removed from storage
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step logout">
+                    <div class="flow-label">Step 4</div>
+                    User state is set to <code class="inline-code">null</code>
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step logout">
+                    <div class="flow-label">Step 5</div>
+                    App detects <code class="inline-code">user === null</code>, redirects to login
+                </div>
+            </div>
+
+            <h3>Code: Auth Context Logout Function</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">context/authContext.tsx</span>
+                    <span class="code-lang">TSX</span>
+                </div>
+                <pre><code><span class="kw">const</span> <span class="fn">logout</span> = <span class="kw">async</span> () =&gt; {
+    <span class="cm">// Step 1: Remove token from storage</span>
+    <span class="kw">await</span> <span class="fn">removeToken</span>();
+
+    <span class="cm">// Step 2: Set user to null (triggers re-render)</span>
+    <span class="fn">setUser</span>(<span class="kw">null</span>);
+    <span class="cm">// isAuthenticated automatically becomes false (derived from !!user)</span>
+    <span class="cm">// Any screen checking user will now see null</span>
+};</code></pre>
+            </div>
+
+            <h3>Code: Storage Remove Token</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">utils/storage.ts</span>
+                    <span class="code-lang">TS</span>
+                </div>
+                <pre><code><span class="kw">export async function</span> <span class="fn">removeToken</span>() {
+    <span class="kw">if</span> (isWeb) {
+        localStorage.<span class="fn">removeItem</span>(<span class="str">'authToken'</span>);
+    } <span class="kw">else</span> {
+        <span class="kw">await</span> SecureStore.<span class="fn">deleteItemAsync</span>(<span class="str">'authToken'</span>);
+    }
+}</code></pre>
+            </div>
+
+            <h3>Code: Usage in a Screen</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">app/(tabs)/index.tsx</span>
+                    <span class="code-lang">TSX</span>
+                </div>
+                <pre><code><span class="kw">import</span> { <span class="fn">useAuth</span> } <span class="kw">from</span> <span class="str">'../../hooks/useAuth'</span>;
+
+<span class="kw">export default function</span> <span class="fn">Home</span>() {
+    <span class="kw">const</span> { user, logout } = <span class="fn">useAuth</span>();
+
+    <span class="kw">return</span> (
+        <span class="tag">&lt;View&gt;</span>
+            <span class="tag">&lt;Text&gt;</span>Welcome, {user?.name}!<span class="tag">&lt;/Text&gt;</span>
+            <span class="tag">&lt;TouchableOpacity</span> <span class="attr">onPress</span>={logout}<span class="tag">&gt;</span>
+                <span class="tag">&lt;Text&gt;</span>Logout<span class="tag">&lt;/Text&gt;</span>
+            <span class="tag">&lt;/TouchableOpacity&gt;</span>
+        <span class="tag">&lt;/View&gt;</span>
+    );
+}</code></pre>
+            </div>
+
+            <div class="highlight">
+                <strong>Why no router.replace() here?</strong> Because setting <code class="inline-code">setUser(null)</code> makes <code class="inline-code">isAuthenticated</code> false. The route guard in <code class="inline-code">app/index.tsx</code> detects this and redirects to login automatically. Logout doesn't need explicit navigation.
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECTION 6: ROUTE GUARD -->
+        <!-- ═══════════════════════════════════════ -->
+        <div id="guard" class="section">
+            <h2>6. Route Guard (Entry Gate)</h2>
+            <p>This is the file that decides which screen to show when the app first loads.</p>
+
+            <h3>Code: index.tsx</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">app/index.tsx</span>
+                    <span class="code-lang">TSX</span>
+                </div>
+                <pre><code><span class="kw">import</span> { <span class="type">Redirect</span> } <span class="kw">from</span> <span class="str">'expo-router'</span>
+<span class="kw">import</span> { <span class="fn">useAuth</span> } <span class="kw">from</span> <span class="str">'../hooks/useAuth'</span>
+
+<span class="kw">export default function</span> <span class="fn">index</span>() {
+    <span class="kw">const</span> { user, isLoading } = <span class="fn">useAuth</span>();
+
+    <span class="cm">// Step 1: Show loading while checking if token exists</span>
+    <span class="kw">if</span> (isLoading) {
+        <span class="kw">return</span> &lt;<span class="type">ActivityIndicator</span> /&gt;;
+    }
+
+    <span class="cm">// Step 2: If user exists (token was valid), go to tabs</span>
+    <span class="kw">if</span> (user) {
+        <span class="kw">return</span> &lt;<span class="type">Redirect</span> <span class="attr">href</span>=<span class="str">"/(tabs)"</span> /&gt;;
+    }
+
+    <span class="cm">// Step 3: No user = not logged in, go to login</span>
+    <span class="kw">return</span> &lt;<span class="type">Redirect</span> <span class="attr">href</span>=<span class="str">"/(auth)/login"</span> /&gt;;
+}</code></pre>
+            </div>
+
+            <h3>How It Works on App Start</h3>
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="flow-label">App Launches</div>
+                    <code class="inline-code">AuthProvider</code> mounts, <code class="inline-code">isLoading = true</code>
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step">
+                    <div class="flow-label">AuthProvider useEffect runs</div>
+                    Checks storage for saved token via <code class="inline-code">getToken()</code>
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step">
+                    <div class="flow-label">Token found?</div>
+                    If yes: calls <code class="inline-code">getProfile()</code>, sets user. If no: user stays null.
+                </div>
+                <div class="flow-arrow">&#8595;</div>
+                <div class="flow-step">
+                    <div class="flow-label">isLoading = false</div>
+                    <code class="inline-code">index.tsx</code> re-renders, redirects based on user value
+                </div>
+            </div>
+
+            <h3>Code: Auth Provider (App Start Logic)</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-filename">context/authContext.tsx</span>
+                    <span class="code-lang">TSX</span>
+                </div>
+                <pre><code><span class="kw">export function</span> <span class="fn">AuthProvider</span>({ children }: { children: <span class="type">ReactNode</span> }) {
+    <span class="kw">const</span> [user, setUser] = <span class="fn">useState</span>&lt;<span class="type">User</span> | <span class="kw">null</span>&gt;(<span class="kw">null</span>);
+    <span class="kw">const</span> [isLoading, setIsLoading] = <span class="fn">useState</span>(<span class="kw">true</span>);
+
+    <span class="fn">useEffect</span>(() =&gt; {
+        <span class="kw">async function</span> <span class="fn">loadUser</span>() {
+            <span class="kw">try</span> {
+                <span class="cm">// Check if we have a saved token</span>
+                <span class="kw">const</span> token = <span class="kw">await</span> <span class="fn">getToken</span>();
+
+                <span class="kw">if</span> (token) {
+                    <span class="cm">// Token exists — use it to get user data</span>
+                    <span class="kw">const</span> userData = <span class="kw">await</span> <span class="fn">getProfile</span>();
+                    <span class="fn">setUser</span>(userData);  <span class="cm">// User is restored!</span>
+                }
+            } <span class="kw">catch</span> {
+                <span class="cm">// Token was invalid/expired — remove it</span>
+                <span class="kw">await</span> <span class="fn">removeToken</span>();
+            } <span class="kw">finally</span> {
+                <span class="fn">setIsLoading</span>(<span class="kw">false</span>);  <span class="cm">// Done loading, allow redirect</span>
+            }
+        }
+        <span class="fn">loadUser</span>();
+    }, []); <span class="cm">// Empty array = runs once on mount</span>
+
+    <span class="kw">return</span> (
+        <span class="tag">&lt;AuthContext.Provider</span> <span class="attr">value</span>={{
+            user,
+            isLoading,
+            isAuthenticated: !!user,  <span class="cm">// Derived boolean</span>
+            login, register, logout
+        }}<span class="tag">&gt;</span>
+            {children}
+        <span class="tag">&lt;/AuthContext.Provider&gt;</span>
+    );
+}</code></pre>
+            </div>
+
+            <div class="highlight warn">
+                <strong>Why does index.tsx redirect, not navigate?</strong> Because <code class="inline-code">&lt;Redirect&gt;</code> is declarative — it tells Expo Router "always go here." It's not an imperative <code class="inline-code">router.push()</code>. Once the app passes <code class="inline-code">index.tsx</code>, the redirect doesn't fire again. That's why login/register need explicit <code class="inline-code">router.replace()</code>.
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SECTION 7: LIVE DEMO -->
+        <!-- ═══════════════════════════════════════ -->
+        <div id="working" class="section">
+            <h2>7. Live Demo (Browser Simulation)</h2>
+            <p>This is a simplified version of the same auth logic, running in your browser. It uses <code class="inline-code">localStorage</code> for persistence — just like your Expo app uses SecureStore.</p>
+
+            <div id="demo-container" style="max-width: 400px; margin: 2rem auto;">
+                <!-- Login Screen -->
+                <div id="screen-login" class="screen">
+                    <h3 style="text-align:center; margin-bottom:1.5rem; color:#93c5fd;">Login</h3>
+                    <div id="login-error" style="display:none; background:#451a03; color:#fbbf24; padding:0.5rem; border-radius:6px; margin-bottom:1rem; text-align:center; font-size:0.85rem;"></div>
+                    <input type="email" id="login-email" placeholder="Email" style="width:100%; padding:0.7rem; margin-bottom:0.75rem; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#e2e8f0; font-size:0.95rem;" />
+                    <input type="password" id="login-password" placeholder="Password" style="width:100%; padding:0.7rem; margin-bottom:1rem; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#e2e8f0; font-size:0.95rem;" />
+                    <button onclick="handleLogin()" style="width:100%; padding:0.7rem; background:#22c55e; color:white; border:none; border-radius:6px; font-size:1rem; cursor:pointer; font-weight:600;">Login</button>
+                    <p style="text-align:center; margin-top:1rem; font-size:0.9rem; color:#94a3b8;">
+                        Don't have an account?
+                        <a href="#" onclick="showScreen('register'); return false;" style="color:#60a5fa;">Register</a>
+                    </p>
+                </div>
+
+                <!-- Register Screen -->
+                <div id="screen-register" class="screen" style="display:none;">
+                    <h3 style="text-align:center; margin-bottom:1.5rem; color:#93c5fd;">Register</h3>
+                    <div id="register-error" style="display:none; background:#451a03; color:#fbbf24; padding:0.5rem; border-radius:6px; margin-bottom:1rem; text-align:center; font-size:0.85rem;"></div>
+                    <input type="text" id="register-name" placeholder="Name" style="width:100%; padding:0.7rem; margin-bottom:0.75rem; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#e2e8f0; font-size:0.95rem;" />
+                    <input type="email" id="register-email" placeholder="Email" style="width:100%; padding:0.7rem; margin-bottom:0.75rem; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#e2e8f0; font-size:0.95rem;" />
+                    <input type="password" id="register-password" placeholder="Password (any)" style="width:100%; padding:0.7rem; margin-bottom:1rem; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#e2e8f0; font-size:0.95rem;" />
+                    <button onclick="handleRegister()" style="width:100%; padding:0.7rem; background:#3b82f6; color:white; border:none; border-radius:6px; font-size:1rem; cursor:pointer; font-weight:600;">Register</button>
+                    <p style="text-align:center; margin-top:1rem; font-size:0.9rem; color:#94a3b8;">
+                        Already have an account?
+                        <a href="#" onclick="showScreen('login'); return false;" style="color:#60a5fa;">Login</a>
+                    </p>
+                </div>
+
+                <!-- Home Screen -->
+                <div id="screen-home" class="screen" style="display:none;">
+                    <div style="text-align:center; padding:2rem 0;">
+                        <p style="font-size:1.2rem; margin-bottom:0.5rem;">Welcome, <strong id="home-name"></strong>!</p>
+                        <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:1.5rem;">You are logged in.</p>
+                        <button onclick="handleLogout()" style="padding:0.7rem 2rem; background:#ef4444; color:white; border:none; border-radius:6px; font-size:1rem; cursor:pointer; font-weight:600;">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Console Log (What Happens)</h3>
+            <div id="console-log" style="background:#0f172a; border:1px solid #334155; border-radius:8px; padding:1rem; font-family:monospace; font-size:0.82rem; max-height:250px; overflow-y:auto; line-height:1.8;">
+                <div style="color:#64748b;">[App started] Checking for saved token...</div>
+            </div>
+
+            <hr>
+
+            <h3>How This Demo Mirrors Your Expo App</h3>
+            <table>
+                <tr><th>Demo (Browser)</th><th>Your Expo App</th></tr>
+                <tr><td><code class="inline-code">localStorage</code></td><td><code class="inline-code">SecureStore</code></td></tr>
+                <tr><td><code class="inline-code">showScreen('login')</code></td><td><code class="inline-code">router.replace('/(auth)/login')</code></td></tr>
+                <tr><td><code class="inline-code">showScreen('home')</code></td><td><code class="inline-code">router.replace('/(tabs)')</code></td></tr>
+                <tr><td><code class="inline-code">document.getElementById().style.display</code></td><td>React re-render via <code class="inline-code">setUser()</code></td></tr>
+                <tr><td><code class="inline-code">console.log()</code></td><td>Network request / API call</td></tr>
+            </table>
+        </div>
+
+        <div class="footer">
+            Complete Auth Flow Guide — Built for your AuthApp project
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- JAVASCRIPT: Tab Navigation + Demo -->
+    <!-- ═══════════════════════════════════════ -->
+    <script>
+        // ── Tab Navigation ──
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ── Mock Auth (same logic as your services/auth.ts) ──
+        const mockUsers = {};
+
+        function log(msg, color = '#64748b') {
+            const el = document.getElementById('console-log');
+            const time = new Date().toLocaleTimeString();
+            el.innerHTML += `<div style="color:${color};">[${time}] ${msg}</div>`;
+            el.scrollTop = el.scrollHeight;
+        }
+
+        function showScreen(name) {
+            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+            document.getElementById('screen-' + name).style.display = 'block';
+        }
+
+        // ── Simulated API calls (same as services/auth.ts) ──
+        async function mockRegisterUser(name, email, password) {
+            await new Promise(r => setTimeout(r, 800));
+            log(`POST /api/register → { name: "${name}", email: "${email}" }`, '#86efac');
+            mockUsers[email] = { id: '1', email, name };
+            return { token: 'jwt-' + Date.now(), user: { id: '1', email, name } };
+        }
+
+        async function mockLoginUser(email, password) {
+            await new Promise(r => setTimeout(r, 800));
+            log(`POST /api/login → { email: "${email}" }`, '#86efac');
+            if (!mockUsers[email]) {
+                throw new Error('No account found. Please register first.');
+            }
+            return { token: 'jwt-' + Date.now(), user: mockUsers[email] };
+        }
+
+        function mockSetToken(token) {
+            localStorage.setItem('authToken', token);
+            log(`Token saved to localStorage`, '#fbbf24');
+        }
+
+        function mockGetToken() {
+            return localStorage.getItem('authToken');
+        }
+
+        function mockRemoveToken() {
+            localStorage.removeItem('authToken');
+            log(`Token removed from localStorage`, '#fbbf24');
+        }
+
+        // ── Screen Handlers (same as your register.tsx / login.tsx) ──
+        async function handleRegister() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const errorEl = document.getElementById('register-error');
+            errorEl.style.display = 'none';
+
+            if (!name || !email || !password) {
+                errorEl.textContent = 'All fields required';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            log('Calling register(name, email, password)...', '#60a5fa');
+
+            try {
+                const response = await mockRegisterUser(name, email, password);
+                log(`Response: { token: "${response.token.slice(0,20)}...", user: { name: "${response.user.name}" } }`, '#22c55e');
+                mockSetToken(response.token);
+                log(`setUser({ id: "${response.user.id}", email: "${response.user.email}", name: "${response.user.name}" })`, '#c084fc');
+                log(`isAuthenticated is now TRUE`, '#22c55e');
+
+                // router.replace('/(tabs)') — navigate to home
+                log(`router.replace('/(tabs)') → Navigating to Home screen`, '#f472b6');
+                document.getElementById('home-name').textContent = name;
+                showScreen('home');
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.style.display = 'block';
+                log(`Error: ${err.message}`, '#f87171');
+            }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorEl = document.getElementById('login-error');
+            errorEl.style.display = 'none';
+
+            if (!email || !password) {
+                errorEl.textContent = 'All fields required';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            log('Calling login(email, password)...', '#60a5fa');
+
+            try {
+                const response = await mockLoginUser(email, password);
+                log(`Response: { token: "${response.token.slice(0,20)}...", user: { name: "${response.user.name}" } }`, '#22c55e');
+                mockSetToken(response.token);
+                log(`setUser({ id: "${response.user.id}", email: "${response.user.email}", name: "${response.user.name}" })`, '#c084fc');
+                log(`isAuthenticated is now TRUE`, '#22c55e');
+
+                log(`router.replace('/(tabs)') → Navigating to Home screen`, '#f472b6');
+                document.getElementById('home-name').textContent = response.user.name;
+                showScreen('home');
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.style.display = 'block';
+                log(`Error: ${err.message}`, '#f87171');
+            }
+        }
+
+        function handleLogout() {
+            log('Calling logout()...', '#60a5fa');
+            mockRemoveToken();
+            log(`setUser(null)`, '#c084fc');
+            log(`isAuthenticated is now FALSE`, '#22c55e');
+            log(`User is null → Redirect to /(auth)/login`, '#f472b6');
+            showScreen('login');
+        }
+
+        // ── On Page Load: Check for saved token (same as AuthProvider useEffect) ──
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = mockGetToken();
+            if (token) {
+                log(`Found saved token: "${token.slice(0,20)}..."`, '#fbbf24');
+                log(`getProfile() → Fetching user data...`, '#60a5fa');
+                log(`User restored from token → Redirect to /(tabs)`, '#22c55e');
+                log(`(In real app, profile API call would validate token first)`, '#64748b');
+                showScreen('home');
+                document.getElementById('home-name').textContent = 'Restored User';
+            } else {
+                log(`No saved token found → Redirect to /(auth)/login`, '#f472b6');
+                showScreen('login');
+            }
+        });
+    </script>
+</body>
+</html>
