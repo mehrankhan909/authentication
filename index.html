@@ -243,16 +243,50 @@
             background: #1e293b;
             border: 1px solid #334155;
             border-radius: 10px;
-            padding: 1.25rem;
+            padding: 1.25rem 1.25rem 1.25rem 0;
             font-family: monospace;
             font-size: 0.88rem;
             line-height: 1.8;
             margin: 1.25rem 0;
         }
 
-        .file-tree .folder { color: #fbbf24; }
+        .file-tree ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .file-tree li {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .file-tree li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            border-left: 1px dashed #334155;
+        }
+
+        .file-tree li::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.9em;
+            width: 1rem;
+            border-top: 1px dashed #334155;
+        }
+
+        .file-tree > ul > li::before,
+        .file-tree > ul > li::after {
+            display: none;
+        }
+
+        .file-tree .folder { color: #fbbf24; font-weight: 600; }
         .file-tree .file { color: #60a5fa; }
-        .file-tree .desc { color: #64748b; }
+        .file-tree .desc { color: #64748b; margin-left: 0.5rem; }
 
         /* ── Table ── */
         table {
@@ -405,32 +439,53 @@
             <p>Every file has exactly one job. Here's the complete structure:</p>
 
             <div class="file-tree">
-<span class="folder">app/</span>                    <span class="desc">← Routes (file-based routing)</span>
-  <span class="file">_layout.tsx</span>              <span class="desc">← Root layout: wraps everything in AuthProvider</span>
-  <span class="file">index.tsx</span>                <span class="desc">← Entry gate: checks auth, redirects to login or home</span>
-  <span class="folder">(auth)/</span>                  <span class="desc">← Group: unauthenticated screens</span>
-    <span class="file">login.tsx</span>            <span class="desc">← Login screen</span>
-    <span class="file">register.tsx</span>         <span class="desc">← Register screen</span>
-  <span class="folder">(tabs)/</span>                  <span class="desc">← Group: authenticated screens</span>
-    <span class="file">_layout.tsx</span>          <span class="desc">← Tab navigator</span>
-    <span class="file">index.tsx</span>            <span class="desc">← Home screen (first tab)</span>
-
-<span class="folder">context/</span>                  <span class="desc">← Global state</span>
-  <span class="file">authContext.tsx</span>         <span class="desc">← Creates auth state + exposes login/register/logout</span>
-
-<span class="folder">hooks/</span>                    <span class="desc">← Reusable stateful logic</span>
-  <span class="file">useAuth.ts</span>             <span class="desc">← Shortcut to consume auth context</span>
-
-<span class="folder">services/</span>                 <span class="desc">← API communication</span>
-  <span class="file">auth.ts</span>                <span class="desc">← Auth API calls (login, register, getProfile)</span>
-  <span class="file">api.ts</span>                 <span class="desc">← Generic HTTP client with token header</span>
-
-<span class="folder">types/</span>                    <span class="desc">← TypeScript definitions</span>
-  <span class="file">auth.ts</span>                <span class="desc">← User, AuthResponse, AuthContextType interfaces</span>
-
-<span class="folder">utils/</span>                    <span class="desc">← Pure helper functions</span>
-  <span class="file">storage.ts</span>             <span class="desc">← Token persistence (SecureStore / localStorage)</span>
-  <span class="file">validator.ts</span>           <span class="desc">← Input validation (email, password)</span>
+                <ul>
+                    <li><span class="folder">app/</span> <span class="desc">← Routes (file-based routing)</span>
+                        <ul>
+                            <li><span class="file">_layout.tsx</span> <span class="desc">← Root layout: wraps everything in AuthProvider</span></li>
+                            <li><span class="file">index.tsx</span> <span class="desc">← Entry gate: checks auth, redirects to login or home</span></li>
+                            <li><span class="folder">(auth)/</span> <span class="desc">← Group: unauthenticated screens</span>
+                                <ul>
+                                    <li><span class="file">login.tsx</span> <span class="desc">← Login screen</span></li>
+                                    <li><span class="file">register.tsx</span> <span class="desc">← Register screen</span></li>
+                                </ul>
+                            </li>
+                            <li><span class="folder">(tabs)/</span> <span class="desc">← Group: authenticated screens</span>
+                                <ul>
+                                    <li><span class="file">_layout.tsx</span> <span class="desc">← Tab navigator</span></li>
+                                    <li><span class="file">index.tsx</span> <span class="desc">← Home screen (first tab)</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><span class="folder">context/</span> <span class="desc">← Global state</span>
+                        <ul>
+                            <li><span class="file">authContext.tsx</span> <span class="desc">← Creates auth state + exposes login/register/logout</span></li>
+                        </ul>
+                    </li>
+                    <li><span class="folder">hooks/</span> <span class="desc">← Reusable stateful logic</span>
+                        <ul>
+                            <li><span class="file">useAuth.ts</span> <span class="desc">← Shortcut to consume auth context</span></li>
+                        </ul>
+                    </li>
+                    <li><span class="folder">services/</span> <span class="desc">← API communication</span>
+                        <ul>
+                            <li><span class="file">auth.ts</span> <span class="desc">← Auth API calls (login, register, getProfile)</span></li>
+                            <li><span class="file">api.ts</span> <span class="desc">← Generic HTTP client with token header</span></li>
+                        </ul>
+                    </li>
+                    <li><span class="folder">types/</span> <span class="desc">← TypeScript definitions</span>
+                        <ul>
+                            <li><span class="file">auth.ts</span> <span class="desc">← User, AuthResponse, AuthContextType interfaces</span></li>
+                        </ul>
+                    </li>
+                    <li><span class="folder">utils/</span> <span class="desc">← Pure helper functions</span>
+                        <ul>
+                            <li><span class="file">storage.ts</span> <span class="desc">← Token persistence (SecureStore / localStorage)</span></li>
+                            <li><span class="file">validator.ts</span> <span class="desc">← Input validation (email, password)</span></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
 
             <h3>Data Flow Diagram</h3>
