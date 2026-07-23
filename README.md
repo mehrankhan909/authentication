@@ -1,385 +1,689 @@
-# React Native Expo Authentication Architecture — Complete Guide
+<div align="center">
 
-> A single-file, interactive documentation website that teaches you **WHY** every authentication file exists, **WHEN** it should be created, **WHO** uses it, and **HOW** the entire system evolves from an empty project to a production-ready authentication architecture.
+# 🔐 React Native Expo Authentication Architecture
 
----
+### Complete Interactive Learning Guide
 
-## Table of Contents
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-- [Overview](#overview)
-- [What You'll Learn](#what-youll-learn)
-- [Who This Is For](#who-this-is-for)
-- [Features](#features)
-- [Content Coverage](#content-coverage)
-- [How to Use](#how-to-use)
-- [Project Structure](#project-structure)
-- [Technology Stack](#technology-stack)
-- [Architecture Overview](#architecture-overview)
-- [Chapter Index](#chapter-index)
-- [Provider Comparison](#provider-comparison)
-- [Contributing](#contributing)
-- [License](#license)
+**A single-file, interactive documentation website that teaches you WHY every authentication file exists, WHEN it should be created, WHO uses it, and HOW the entire system evolves.**
+
+[![Open Documentation](https://img.shields.io/badge/📖_Open_Documentation-0a0e1a?style=for-the-badge&labelColor=3b82f6&color=0a0e1a)](index.html)
+[![View Live](https://img.shields.io/badge/🌐_View_Live-0a0e1a?style=for-the-badge&labelColor=22c55e&color=0a0e1a)](index.html)
 
 ---
 
-## Overview
+### ✨ Key Highlights
 
-Most authentication tutorials teach you **WHAT** to write. This guide teaches you **WHY** it exists.
+| 📚 Content | 🎯 Learning | 🛠️ Features |
+|:----------:|:-----------:|:------------:|
+| **50+ Chapters** | **28 Auth Modules** | **Zero Dependencies** |
+| **8 Sections** | **6 Provider Comparisons** | **Single HTML File** |
+| **Interview Q&A** | **Hands-on Exercises** | **Dark/Light Mode** |
 
-This is a complete, self-contained HTML documentation website (no frameworks, no external dependencies) that covers every major authentication concept in React Native Expo — from the very first login screen to a full production architecture with MFA, role-based access, OAuth, token refresh, and more.
-
-Everything lives in **one HTML file** — open it in any browser and start learning.
-
----
-
-## What You'll Learn
-
-- **Architecture from Scratch** — how authentication architecture is born from nothing
-- **Dependency Graphs** — which files depend on which, who calls whom
-- **28 Auth Modules** — Login, Register, OAuth, MFA, Magic Links, Session Management
-- **File Creation Order** — the exact order to create auth files and WHY each must come first
-- **Provider Comparison** — Firebase vs Supabase vs Clerk vs Auth0 vs AWS Cognito
-- **Security Deep Dive** — JWT, refresh tokens, secure storage, OAuth, CSRF, replay attacks
-- **State Machine** — every auth state, who changes it, which components react
-- **Project Evolution** — watch the folder structure grow as features are added
-- **Production Best Practices** — the dos, don'ts, and production checklist
-- **Interview Questions** — common auth architecture interview Q&A
+</div>
 
 ---
 
-## Who This Is For
+## 📖 Table of Contents
 
-| Level | What You'll Get |
-|-------|----------------|
-| **Beginner** | Every concept explained from scratch. No prior auth knowledge required. |
-| **Intermediate** | Understand WHY the architecture matters and how to make better decisions. |
-| **Senior** | Full system design perspective, provider comparisons, production patterns. |
+<details>
+<summary><strong>📑 Quick Navigation</strong></summary>
 
----
+- [🎯 Overview](#-overview)
+- [📚 What You'll Learn](#-what-youll-learn)
+- [👥 Who This Is For](#-who-this-is-for)
+- [✨ Features](#-features)
+- [📁 Content Coverage](#-content-coverage)
+- [🚀 How to Use](#-how-to-use)
+- [🏗️ Project Structure](#️-project-structure)
+- [⚙️ Technology Stack](#️-technology-stack)
+- [🔄 Architecture Overview](#-architecture-overview)
+- [📑 Chapter Index](#-chapter-index)
+- [⚡ Provider Comparison](#-provider-comparison)
+- [🔒 Security Concepts](#-security-concepts)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
 
-## Features
-
-### Design & UX
-- Dark Mode / Light Mode with toggle
-- Responsive design (desktop, tablet, mobile)
-- Sidebar navigation with expandable sections
-- Search box with keyboard shortcut (Ctrl+K)
-- Breadcrumb navigation
-- Scroll progress bar
-- Smooth scrolling
-- Sticky sidebar
-- Back to top button
-
-### Learning Aids
-- Expandable/collapsible sections
-- Interactive cards
-- Animated flow diagrams (HTML/CSS)
-- Dependency diagrams
-- State machine visualizations
-- Folder tree explorer
-- Code tabs (Minimal / Production / Bad Example)
-- Syntax highlighting
-- Copy buttons on all code blocks
-- Notes, Warnings, Best Practices callouts
-- Do / Don't comparison boxes
-- Mini quizzes with explanations
-- Interview questions with answers
-- Key takeaways after every chapter
-- Hands-on exercises
-
-### Content
-- 50+ chapters across 8 major sections
-- 28 complete authentication modules
-- 6 provider comparison profiles
-- Full security deep dive
-- Complete final project with folder structure
+</details>
 
 ---
 
-## Content Coverage
+## 🎯 Overview
 
-### Authentication Modules (28)
+> 💡 **Most authentication tutorials teach you WHAT to write. This guide teaches you WHY it exists.**
 
-| # | Module | Description |
-|---|--------|-------------|
-| 1 | Login | Email/password authentication |
-| 2 | Register | New account creation |
-| 3 | Logout | Secure session termination |
-| 4 | Forgot Password | Password recovery via email |
-| 5 | Reset Password | Setting a new password via deep link |
-| 6 | Email Verification | Confirming email ownership |
-| 7 | Phone Authentication | SMS-based login |
-| 8 | OTP Authentication | One-time password verification |
-| 9 | Google Sign In | OAuth with Google |
-| 10 | Apple Sign In | OAuth with Apple (App Store requirement) |
-| 11 | Facebook Login | OAuth with Facebook |
-| 12 | GitHub Login | OAuth with GitHub |
-| 13 | Anonymous Login | Trial accounts before signup |
-| 14 | Magic Link Login | Passwordless email-based auth |
-| 15 | Session Restore | Persisting login across restarts |
-| 16 | Refresh Token | Keeping sessions alive |
-| 17 | Auto Login | Automatic session restoration |
-| 18 | Session Expiration | Handling expired tokens |
-| 19 | Token Refresh | Proactive token renewal |
-| 20 | Delete Account | GDPR-compliant account removal |
-| 21 | Change Password | Authenticated password update |
-| 22 | Update Email | Changing account email |
-| 23 | Multi-factor Auth (MFA) | TOTP/SMS second factor |
-| 24 | Role Based Auth | Admin/Editor/Viewer access control |
-| 25 | Protected Routes | Auth-required navigation |
-| 26 | Guest Routes | Unauthenticated-only navigation |
-| 27 | Admin Routes | Admin-only navigation |
-| 28 | Profile Synchronization | Keeping user data in sync |
+This is a **complete, self-contained HTML documentation website** (no frameworks, no external dependencies) that covers every major authentication concept in React Native Expo — from the very first login screen to a full production architecture with MFA, role-based access, OAuth, token refresh, and more.
 
-### Folder Structure Explained
+<div align="center">
 
-| Folder | Purpose |
-|--------|---------|
-| `types/` | TypeScript type definitions |
-| `config/` | External service initialization |
-| `constants/` | Application-wide constants |
-| `utils/` | Pure utility functions |
-| `storage/` | Secure local data persistence |
-| `services/` | External API communication |
-| `repositories/` | Data access abstraction |
-| `context/` | React Context definitions |
-| `hooks/` | Custom React hooks |
-| `providers/` | Provider wrapper composition |
-| `components/` | Reusable UI components |
-| `screens/` (app/) | Page-level route components |
-| `navigation/` | Navigation configuration |
-| `assets/` | Images, fonts, icons |
+```
+┌─────────────────────────────────────────────────────────────┐
+│  📄 One HTML File  →  🌐 Full Interactive Documentation     │
+│  🚫 No Build Steps  →  🚀 Instant Learning Experience      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+</div>
 
 ---
 
-## How to Use
+## 📚 What You'll Learn
 
-### Quick Start
+<table>
+<tr>
+<td width="50%">
 
-1. Clone or download this repository
-2. Open `index.html` in any modern browser
-3. Start reading from the **Home** page
+### 🏗️ Architecture & Design
+
+- ✅ **Architecture from Scratch** — how auth architecture is born
+- ✅ **Dependency Graphs** — which files depend on which
+- ✅ **File Creation Order** — exact order with reasoning
+- ✅ **Project Evolution** — watch structure grow step-by-step
+
+</td>
+<td width="50%">
+
+### 🔐 Security & Implementation
+
+- ✅ **28 Auth Modules** — complete authentication coverage
+- ✅ **Security Deep Dive** — JWT, tokens, OAuth, CSRF
+- ✅ **Provider Comparison** — Firebase vs Supabase vs Clerk
+- ✅ **Production Best Practices** — dos, don'ts, checklist
+
+</td>
+</tr>
+</table>
+
+---
+
+## 👥 Who This Is For
+
+<table>
+<tr>
+<th>Level</th>
+<th>What You'll Get</th>
+<th>Prerequisites</th>
+</tr>
+<tr>
+<td><strong>🟢 Beginner</strong></td>
+<td>Every concept explained from scratch. No prior auth knowledge required.</td>
+<td>Basic React knowledge</td>
+</tr>
+<tr>
+<td><strong>🟡 Intermediate</strong></td>
+<td>Understand WHY the architecture matters and how to make better decisions.</td>
+<td>React Native experience</td>
+</tr>
+<tr>
+<td><strong>🔴 Senior</strong></td>
+<td>Full system design perspective, provider comparisons, production patterns.</td>
+<td>Architecture experience</td>
+</tr>
+</table>
+
+---
+
+## ✨ Features
+
+<div align="center">
+
+### 🎨 Design & User Experience
+
+</div>
+
+<table>
+<tr>
+<td>
+
+- 🌙 Dark Mode / Light Mode toggle
+- 📱 Responsive design (all devices)
+- 🗂️ Sidebar navigation
+- 🔍 Search with Ctrl+K shortcut
+
+</td>
+<td>
+
+- 📍 Breadcrumb navigation
+- 📊 Scroll progress bar
+- ⬆️ Back to top button
+- ✨ Smooth scrolling
+
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+### 📖 Learning Aids
+
+</div>
+
+<table>
+<tr>
+<td>
+
+- 📂 Expandable/collapsible sections
+- 🃏 Interactive cards
+- 📊 Animated flow diagrams
+- 🔗 Dependency diagrams
+
+</td>
+<td>
+
+- 🎯 State machine visualizations
+- 📁 Folder tree explorer
+- 🎨 Syntax highlighting
+- 📋 Copy buttons on all code blocks
+
+</td>
+</tr>
+<tr>
+<td>
+
+- 💡 Notes, Warnings, Best Practices
+- ✅ Do / Don't comparison boxes
+- ❓ Mini quizzes with explanations
+
+</td>
+<td>
+
+- 🎤 Interview questions
+- 📝 Key takeaways after each chapter
+- 💪 Hands-on exercises
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📁 Content Coverage
+
+<details open>
+<summary><strong>🔑 28 Authentication Modules</strong></summary>
+
+| # | Module | Description | Status |
+|:---:|--------|-------------|:------:|
+| 1 | Login | Email/password authentication | ✅ |
+| 2 | Register | New account creation | ✅ |
+| 3 | Logout | Secure session termination | ✅ |
+| 4 | Forgot Password | Password recovery via email | ✅ |
+| 5 | Reset Password | Setting a new password via deep link | ✅ |
+| 6 | Email Verification | Confirming email ownership | ✅ |
+| 7 | Phone Authentication | SMS-based login | ✅ |
+| 8 | OTP Authentication | One-time password verification | ✅ |
+| 9 | Google Sign In | OAuth with Google | ✅ |
+| 10 | Apple Sign In | OAuth with Apple | ✅ |
+| 11 | Facebook Login | OAuth with Facebook | ✅ |
+| 12 | GitHub Login | OAuth with GitHub | ✅ |
+| 13 | Anonymous Login | Trial accounts before signup | ✅ |
+| 14 | Magic Link Login | Passwordless email-based auth | ✅ |
+| 15 | Session Restore | Persisting login across restarts | ✅ |
+| 16 | Refresh Token | Keeping sessions alive | ✅ |
+| 17 | Auto Login | Automatic session restoration | ✅ |
+| 18 | Session Expiration | Handling expired tokens | ✅ |
+| 19 | Token Refresh | Proactive token renewal | ✅ |
+| 20 | Delete Account | GDPR-compliant account removal | ✅ |
+| 21 | Change Password | Authenticated password update | ✅ |
+| 22 | Update Email | Changing account email | ✅ |
+| 23 | Multi-factor Auth | TOTP/SMS second factor | ✅ |
+| 24 | Role Based Auth | Admin/Editor/Viewer access control | ✅ |
+| 25 | Protected Routes | Auth-required navigation | ✅ |
+| 26 | Guest Routes | Unauthenticated-only navigation | ✅ |
+| 27 | Admin Routes | Admin-only navigation | ✅ |
+| 28 | Profile Synchronization | Keeping user data in sync | ✅ |
+
+</details>
+
+<details>
+<summary><strong>📁 Folder Structure Explained</strong></summary>
+
+| Folder | Purpose | Icon |
+|--------|---------|:----:|
+| `types/` | TypeScript type definitions | 📝 |
+| `config/` | External service initialization | ⚙️ |
+| `constants/` | Application-wide constants | 📌 |
+| `utils/` | Pure utility functions | 🔧 |
+| `storage/` | Secure local data persistence | 💾 |
+| `services/` | External API communication | 🌐 |
+| `repositories/` | Data access abstraction | 🗄️ |
+| `context/` | React Context definitions | 🎯 |
+| `hooks/` | Custom React hooks | 🪝 |
+| `providers/` | Provider wrapper composition | 📦 |
+| `components/` | Reusable UI components | 🧩 |
+| `screens/` | Page-level route components | 📱 |
+| `navigation/` | Navigation configuration | 🧭 |
+| `assets/` | Images, fonts, icons | 🖼️ |
+
+</details>
+
+---
+
+## 🚀 How to Use
+
+### ⚡ Quick Start
+
+<div align="center">
 
 ```bash
-# Option 1: Direct file open
+# 📥 Clone the repository
+git clone https://github.com/your-username/AuthApp.git
+
+# 📂 Navigate to the directory
+cd AuthApp
+
+# 🌐 Open in browser
 open index.html
-
-# Option 2: Local server (recommended for search)
-npx serve .
-# Then open http://localhost:3000
-
-# Option 3: Python
-python -m http.server 8000
-# Then open http://localhost:8000
 ```
 
-### Navigation
+</div>
 
-- **Sidebar** — Click any chapter to navigate directly
-- **Search** — Press `Ctrl+K` to search across all chapters
-- **Breadcrumbs** — Click to go back to parent sections
-- **Expandable sections** — Click headers to expand/collapse content
-- **Code blocks** — Click "Copy" to copy code to clipboard
-- **Quizzes** — Click an option to check your answer
-- **Theme toggle** — Click the moon/sun icon to switch themes
+### 🎮 Navigation Guide
 
-### Recommended Reading Order
+| Action | How |
+|--------|-----|
+| **Navigate** | Click any chapter in the sidebar |
+| **Search** | Press `Ctrl+K` to search all chapters |
+| **Go Back** | Click breadcrumbs to return to parent |
+| **Expand Content** | Click section headers |
+| **Copy Code** | Click "Copy" button on any code block |
+| **Test Knowledge** | Click quiz options to check answers |
+| **Switch Theme** | Click the moon/sun icon in header |
 
-1. **Getting Started** — Introduction, Philosophy
-2. **Architecture** — Stages 1-6 (Project Evolution)
-3. **Core Files** — Types, Config, Services, Storage, Context, Hooks, Providers, Components, Screens, Navigation
-4. **Auth Modules** — Login, Register, Logout (start here), then others as needed
-5. **Advanced Topics** — Provider Comparison, Security, Best Practices
-6. **Practice** — Interview Questions, Exercises, Final Project
+### 📚 Recommended Reading Order
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  1️⃣  GETTING STARTED                                            │
+│     └── Introduction → Philosophy                               │
+│                                                                 │
+│  2️⃣  ARCHITECTURE                                               │
+│     └── Stages 1-6 (Project Evolution)                         │
+│                                                                 │
+│  3️⃣  CORE FILES                                                 │
+│     └── Types → Config → Services → Context → Hooks            │
+│                                                                 │
+│  4️⃣  AUTH MODULES                                               │
+│     └── Login → Register → Logout → Then others as needed      │
+│                                                                 │
+│  5️⃣  ADVANCED TOPICS                                            │
+│     └── Provider Comparison → Security → Best Practices        │
+│                                                                 │
+│  6️⃣  PRACTICE                                                   │
+│     └── Interview Questions → Exercises → Final Project        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## Project Structure
+## 🏗️ Project Structure
 
 ```
-AuthApp/
-├── index.html          # The complete documentation website (single file)
-├── README.md           # This file
-└── .gitignore          # Git ignore rules
+📁 AuthApp/
+│
+├── 📄 index.html      # The complete documentation (single file)
+├── 📄 README.md       # This file
+└── 📄 .gitignore      # Git ignore rules
 ```
 
 ---
 
-## Technology Stack
+## ⚙️ Technology Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Structure | HTML5 |
-| Styling | CSS3 (Custom Properties, Grid, Flexbox) |
-| Interactivity | Vanilla JavaScript (ES6+) |
-| Syntax Highlighting | Custom CSS-based |
-| Icons | Unicode/Emoji (no icon libraries) |
-| External Dependencies | **None** |
+<table>
+<tr>
+<td><strong>Layer</strong></td>
+<td><strong>Technology</strong></td>
+<td><strong>Purpose</strong></td>
+</tr>
+<tr>
+<td>Structure</td>
+<td><strong>HTML5</strong></td>
+<td>Semantic markup & accessibility</td>
+</tr>
+<tr>
+<td>Styling</td>
+<td><strong>CSS3</strong></td>
+<td>Custom Properties, Grid, Flexbox</td>
+</tr>
+<tr>
+<td>Interactivity</td>
+<td><strong>Vanilla JavaScript</strong></td>
+<td>ES6+ features</td>
+</tr>
+<tr>
+<td>Code Display</td>
+<td><strong>Custom CSS</strong></td>
+<td>Syntax highlighting</td>
+</tr>
+<tr>
+<td>Icons</td>
+<td><strong>Unicode/Emoji</strong></td>
+<td>No icon libraries needed</td>
+</tr>
+<tr>
+<td>Dependencies</td>
+<td><strong>Zero</strong></td>
+<td>Self-contained HTML file</td>
+</tr>
+</table>
 
-**Zero dependencies.** The entire website is one self-contained HTML file.
-
----
-
-## Architecture Overview
-
-The guide teaches this complete auth architecture:
-
-```
-Screens (Login, Register, Home, Settings)
-    ↓ use
-Components (LoginForm, RegisterForm, ProtectedRoute)
-    ↓ call
-Hooks (useAuth, useSession, useTokenRefresh)
-    ↓ read from
-Context / Providers (AuthProvider, RootProvider)
-    ↓ delegates to
-Services (auth.service, user.service)
-    ↓ uses
-Repositories (auth.repository, user.repository)
-    ↓ persists via
-Storage (auth.storage) + SDK (Firebase/Supabase)
-```
-
-### File Creation Order
-
-1. `types/` — Define contracts first
-2. `config/` — Initialize external services
-3. `constants/` — Application-wide values
-4. `storage/` — Secure persistence layer
-5. `services/` — Business logic layer
-6. `repositories/` — Data access abstraction (optional)
-7. `context/` — Global state definitions
-8. `hooks/` — Clean API for components
-9. `providers/` — Compose context providers
-10. `components/` — Reusable UI
-11. `screens/` (app/) — Page-level routes
-12. **Protect navigation** — Wire up auth guards
-
-Each step exists because the previous step created a need for it.
+> 🎯 **One file. Zero dependencies. Complete learning experience.**
 
 ---
 
-## Chapter Index
+## 🔄 Architecture Overview
 
-### Getting Started
-- Introduction
-- Philosophy
+The guide teaches this complete authentication architecture:
 
-### Architecture
-- Stage 1: Empty Project
-- Stage 2: First Login
-- Stage 3: Services Layer
-- Stage 4: Hooks & Context
-- Stage 5: Providers & Navigation Guard
-- Stage 6: Full Architecture
-- Complete Folder Structure
-- Folder Evolution Timeline
-- File Creation Order
-- Authentication State Machine
+<div align="center">
 
-### Core Files
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        🖥️  SCREENS                              │
+│                  (Login, Register, Home)                        │
+└─────────────────────────┬───────────────────────────────────────┘
+                          │ use
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      🧩  COMPONENTS                             │
+│              (LoginForm, RegisterForm, etc.)                    │
+└─────────────────────────┬───────────────────────────────────────┘
+                          │ call
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        🪝  HOOKS                                │
+│                 (useAuth, useSession, etc.)                     │
+└─────────────────────────┬───────────────────────────────────────┘
+                          │ read from
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    🎯  CONTEXT / PROVIDERS                      │
+│                  (AuthProvider, RootProvider)                   │
+└─────────────────────────┬───────────────────────────────────────┘
+                          │ delegates to
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                       🌐  SERVICES                              │
+│                 (auth.service, user.service)                    │
+└─────────────────────────┬───────────────────────────────────────┘
+                          │ uses
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      💾  STORAGE + SDK                          │
+│              (auth.storage + Firebase/Supabase)                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+</div>
+
+### 📋 File Creation Order
+
+| Step | Folder | Purpose | Why |
+|:----:|--------|---------|-----|
+| 1 | `types/` | Define contracts first | Establish data shapes before implementation |
+| 2 | `config/` | Initialize external services | Setup connections early |
+| 3 | `constants/` | Application-wide values | Centralize configuration |
+| 4 | `storage/` | Secure persistence layer | Token management foundation |
+| 5 | `services/` | Business logic layer | Core authentication operations |
+| 6 | `repositories/` | Data access abstraction | Optional but recommended |
+| 7 | `context/` | Global state definitions | React state management |
+| 8 | `hooks/` | Clean API for components | Developer experience |
+| 9 | `providers/` | Compose context providers | Provider hierarchy |
+| 10 | `components/` | Reusable UI | Visual interface |
+| 11 | `screens/` | Page-level routes | Navigation targets |
+| 12 | 🛡️ | **Protect navigation** | Auth guards & guards |
+
+> 💡 Each step exists because the previous step created a need for it.
+
+---
+
+## 📑 Chapter Index
+
+<table>
+<tr>
+<td>
+
+### 🚀 Getting Started
+- 📖 Introduction
+- 💭 Philosophy
+
+</td>
+<td>
+
+### 🏗️ Architecture
+- 🔹 Stage 1: Empty Project
+- 🔹 Stage 2: First Login
+- 🔹 Stage 3: Services Layer
+- 🔹 Stage 4: Hooks & Context
+- 🔹 Stage 5: Providers & Navigation
+- 🔹 Stage 6: Full Architecture
+
+</td>
+</tr>
+<tr>
+<td>
+
+### 📁 Core Files
 - `types/` — Type Definitions
-- `constants/` — Application Constants
 - `config/` — Service Configuration
 - `services/` — API Communication
-- `repositories/` — Data Access Layer
 - `storage/` — Secure Storage
 - `context/` — React Context
 - `hooks/` — Custom Hooks
-- `providers/` — Provider Composition
-- `components/` — Reusable UI
-- `screens/` — Page Components
-- `navigation/` — Auth-Aware Navigation
 
-### Auth Modules
+</td>
+<td>
+
+### 🔐 Auth Modules
 - Login, Register, Logout
-- Forgot Password, Reset Password
+- Forgot/Reset Password
 - Email Verification
 - Phone Auth, OTP Auth
-- Google, Apple, Facebook, GitHub Sign In
+- OAuth (Google, Apple, Facebook, GitHub)
 - Anonymous Login, Magic Link
-- Session Restore, Refresh Token, Auto Login
-- Session Expiration
-- Delete Account, Change Password, Update Email
-- Profile Synchronization
-- Multi-factor Authentication
-- Role-Based Auth
-- Protected Routes, Guest Routes, Admin Routes
 
-### Dependency Graphs
-- Login Dependencies
-- Register Dependencies
-- Full Dependency Map
+</td>
+</tr>
+<tr>
+<td>
 
-### Advanced Topics
-- Provider Comparison (Firebase, Supabase, Clerk, Auth0, Cognito)
+### ⚙️ Advanced Topics
+- Provider Comparison
 - Security Deep Dive
 - Best Practices
+
+</td>
+<td>
+
+### 🎤 Practice
 - Interview Questions
 - Exercises
 - Final Project
 
----
-
-## Provider Comparison
-
-| Feature | Firebase | Supabase | Clerk | Auth0 | AWS Cognito |
-|---------|----------|----------|-------|-------|-------------|
-| Setup | Easy | Easy | Easiest | Medium | Complex |
-| Free Tier | Generous | Generous | 10K MAU | 7K MAU | 50K MAU |
-| Email/Password | ✅ | ✅ | ✅ | ✅ | ✅ |
-| OAuth | ✅ All | ✅ All | ✅ All | ✅ All | ✅ All |
-| Phone Auth | ✅ | ✅ | ✅ | ✅ | ✅ |
-| MFA | ✅ TOTP | ✅ TOTP | ✅ Built-in UI | ✅ Multi | ✅ SMS/TOTP |
-| Offline Support | ✅ Firestore | ❌ | ❌ | ❌ | ❌ |
-| Best For | Most apps | Open source | Rapid dev | Enterprise | AWS ecosystem |
+</td>
+</tr>
+</table>
 
 ---
 
-## Key Security Concepts Covered
+## ⚡ Provider Comparison
 
-- JWT (JSON Web Token) structure and lifecycle
+<table>
+<tr>
+<th>Feature</th>
+<th>Firebase 🔥</th>
+<th>Supabase 🟢</th>
+<th>Clerk 👤</th>
+<th>Auth0 🔐</th>
+<th>AWS Cognito ☁️</th>
+</tr>
+<tr>
+<td><strong>Setup</strong></td>
+<td>Easy</td>
+<td>Easy</td>
+<td>Easiest</td>
+<td>Medium</td>
+<td>Complex</td>
+</tr>
+<tr>
+<td><strong>Free Tier</strong></td>
+<td>Generous</td>
+<td>Generous</td>
+<td>10K MAU</td>
+<td>7K MAU</td>
+<td>50K MAU</td>
+</tr>
+<tr>
+<td><strong>Email/Password</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>OAuth</strong></td>
+<td>✅ All</td>
+<td>✅ All</td>
+<td>✅ All</td>
+<td>✅ All</td>
+<td>✅ All</td>
+</tr>
+<tr>
+<td><strong>Phone Auth</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>MFA</strong></td>
+<td>✅ TOTP</td>
+<td>✅ TOTP</td>
+<td>✅ Built-in UI</td>
+<td>✅ Multi</td>
+<td>✅ SMS/TOTP</td>
+</tr>
+<tr>
+<td><strong>Offline Support</strong></td>
+<td>✅ Firestore</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Best For</strong></td>
+<td>Most apps</td>
+<td>Open source</td>
+<td>Rapid dev</td>
+<td>Enterprise</td>
+<td>AWS ecosystem</td>
+</tr>
+</table>
+
+---
+
+## 🔒 Security Concepts Covered
+
+<table>
+<tr>
+<td>
+
+### 🔑 Token Security
+- JWT structure and lifecycle
 - Access Token vs Refresh Token
 - Token rotation and expiration
 - Secure storage with `expo-secure-store`
-- Why NOT to use `AsyncStorage` for tokens
-- OAuth 2.0 flow
-- CSRF, XSS, replay attack prevention
+
+</td>
+<td>
+
+### 🛡️ Attack Prevention
+- CSRF protection
+- XSS prevention
+- Replay attack prevention
 - Brute force protection
+
+</td>
+</tr>
+<tr>
+<td>
+
+### 🔐 Production Security
+- Why NOT to use `AsyncStorage`
 - Environment variable management
 - Production security checklist
 
----
+</td>
+<td>
 
-## Contributing
+### 📋 OAuth Flow
+- OAuth 2.0 implementation
+- Provider-specific patterns
+- Token exchange flow
 
-This is a learning resource. If you find:
-- **Errors** in code examples
-- **Outdated** information
-- **Missing** concepts
-- **Improvements** to explanations
-
-Please open an issue or submit a pull request.
-
----
-
-## License
-
-This project is open source and available for educational use.
+</td>
+</tr>
+</table>
 
 ---
 
-## Acknowledgments
+## 🤝 Contributing
 
-Built as a comprehensive learning resource for the React Native Expo community. Designed to feel like a mixture of:
+This is a learning resource. Contributions are welcome!
 
-- React Native Documentation
-- Expo Documentation
-- System Design Course
-- Clean Architecture Course
-- Interactive Programming Book
-- Software Engineering Roadmap
+<div align="center">
+
+| Type | What to Report |
+|------|----------------|
+| 🐛 **Bug** | Errors in code examples |
+| 📝 **Update** | Outdated information |
+| ➕ **Add** | Missing concepts |
+| ✨ **Improve** | Better explanations |
+
+</div>
+
+**How to contribute:**
+1. 🍴 Fork the repository
+2. 🔀 Create a feature branch
+3. 💾 Commit your changes
+4. 📤 Push to the branch
+5. 🔀 Create a Pull Request
 
 ---
 
-**Start learning →** Open `index.html` in your browser.
+## 📄 License
+
+<div align="center">
+
+This project is **open source** and available for **educational use**.
+
+---
+
+### 🙏 Acknowledgments
+
+Built as a comprehensive learning resource for the React Native Expo community.
+
+Designed to feel like a mixture of:
+
+| 📖 Documentation | 🎓 Courses | 📚 Books |
+|:----------------:|:----------:|:--------:|
+| React Native Docs | System Design | Interactive Programming |
+| Expo Docs | Clean Architecture | Software Engineering Roadmap |
+
+---
+
+**🚀 Ready to start learning?**
+
+[![Open Documentation](https://img.shields.io/badge/Open_Index.html-0a0e1a?style=for-the-badge&labelColor=8b5cf6&logo=googlechrome&logoColor=white&color=0a0e1a)](index.html)
+
+</div>
