@@ -948,6 +948,89 @@
         .folder-tree .comment { color: var(--text-tertiary); font-style: italic; }
 
         /* ═══════════════════════════════════════════════════
+           CHAPTER NAVIGATION (FLOATING)
+           ═══════════════════════════════════════════════════ */
+        .chapter-nav {
+            display: none;
+        }
+
+        .chapter-nav.visible {
+            display: flex;
+        }
+
+        .chapter-nav-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-header);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-primary);
+            padding: 0.75rem 2rem;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 950;
+            transition: transform var(--transition);
+        }
+
+        .chapter-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .chapter-nav-btn:hover:not(:disabled) {
+            color: var(--text-primary);
+            border-color: var(--accent-blue);
+            background: var(--bg-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chapter-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .chapter-nav-btn .nav-arrow {
+            font-size: 1rem;
+        }
+
+        .chapter-nav-title {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            text-align: center;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+            .chapter-nav-bottom {
+                padding: 0.5rem 1rem;
+            }
+            .chapter-nav-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.78rem;
+            }
+            .chapter-nav-title {
+                display: none;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════
            DEPENDENCY DIAGRAMS
            ═══════════════════════════════════════════════════ */
         .dep-diagram {
@@ -1907,16 +1990,56 @@
 
                     <h2>The Project</h2>
 
-                    <div class="folder-tree">
-<span class="folder">my-app/</span>
-├── <span class="folder">app/</span>
-│   ├── <span class="file-tsx">_layout.tsx</span>
-│   ├── <span class="file-tsx">index.tsx</span>
-│   └── <span class="file-tsx">home.tsx</span>
-├── <span class="folder">assets/</span>
-├── <span class="file-json">app.json</span>
-├── <span class="file-json">package.json</span>
-└── <span class="file-ts">tsconfig.json</span>
+                    <div class="folder-tree-container">
+                        <div class="folder-tree-header">
+                            <span class="folder-tree-title">📁 The Project</span>
+                            <button class="folder-tree-toggle" onclick="toggleAllFolders(this)">Expand All</button>
+                        </div>
+                        <ul class="folder-tree" role="tree">
+                            <li class="tree-item folder-item" role="treeitem">
+                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                <span class="tree-icon folder-icon">📂</span>
+                                <span class="tree-label folder">my-app</span>
+                                <ul class="tree-children">
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">app</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">_layout.tsx</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">index.tsx</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">home.tsx</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">assets</span>
+                                    </li>
+                                    <li class="tree-item file-item" role="treeitem">
+                                        <span class="tree-icon file-icon file-json">📄</span>
+                                        <span class="tree-label file-json">app.json</span>
+                                    </li>
+                                    <li class="tree-item file-item" role="treeitem">
+                                        <span class="tree-icon file-icon file-json">📄</span>
+                                        <span class="tree-label file-json">package.json</span>
+                                    </li>
+                                    <li class="tree-item file-item" role="treeitem">
+                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                        <span class="tree-label file-ts">tsconfig.json</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
 
                     <h2>The Problem</h2>
@@ -2137,19 +2260,86 @@
                         <li>Firebase config is hardcoded — we need <strong>config</strong></li>
                     </ul>
 
-                    <div class="folder-tree">
-<span class="folder">src/</span>
-├── <span class="folder">types/</span>                       <span class="comment">← NEW</span>
-│   └── <span class="highlight-file">auth.types.ts</span>        <span class="comment">← NEW</span>
-├── <span class="folder">config/</span>                      <span class="comment">← NEW</span>
-│   └── <span class="highlight-file">firebase.ts</span>           <span class="comment">← NEW</span>
-├── <span class="folder">storage/</span>                     <span class="comment">← NEW</span>
-│   └── <span class="highlight-file">auth.storage.ts</span>       <span class="comment">← NEW</span>
-├── <span class="folder">services/</span>
-│   └── <span class="file-ts">auth.service.ts</span>        <span class="comment">← Updated</span>
-└── <span class="folder">app/</span>
-    ├── <span class="file-tsx">index.tsx</span>
-    └── <span class="file-tsx">home.tsx</span>
+                    <div class="folder-tree-container">
+                        <div class="folder-tree-header">
+                            <span class="folder-tree-title">📁 Stage 3: Services Layer</span>
+                            <button class="folder-tree-toggle" onclick="toggleAllFolders(this)">Expand All</button>
+                        </div>
+                        <ul class="folder-tree" role="tree">
+                            <li class="tree-item folder-item" role="treeitem">
+                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                <span class="tree-icon folder-icon">📂</span>
+                                <span class="tree-label folder">src</span>
+                                <ul class="tree-children">
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">types</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.types.ts</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">config</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">firebase.ts</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">storage</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.storage.ts</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">services</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.service.ts</span>
+                                                <span class="badge badge-updated">Updated</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">app</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">index.tsx</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">home.tsx</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
 
                     <h3>types/auth.types.ts</h3>
@@ -2259,17 +2449,71 @@
                     </div>
 
                     <h2>New Files</h2>
-                    <div class="folder-tree">
-<span class="folder">src/</span>
-├── <span class="folder">types/</span>
-├── <span class="folder">config/</span>
-├── <span class="folder">storage/</span>
-├── <span class="folder">services/</span>
-├── <span class="folder">context/</span>                    <span class="comment">← NEW</span>
-│   └── <span class="highlight-file">auth.context.tsx</span>     <span class="comment">← NEW</span>
-├── <span class="folder">hooks/</span>                      <span class="comment">← NEW</span>
-│   └── <span class="highlight-file">useAuth.ts</span>            <span class="comment">← NEW</span>
-└── <span class="folder">app/</span>
+                    <div class="folder-tree-container">
+                        <div class="folder-tree-header">
+                            <span class="folder-tree-title">📁 Stage 4: Hooks & Context</span>
+                            <button class="folder-tree-toggle" onclick="toggleAllFolders(this)">Expand All</button>
+                        </div>
+                        <ul class="folder-tree" role="tree">
+                            <li class="tree-item folder-item" role="treeitem">
+                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                <span class="tree-icon folder-icon">📂</span>
+                                <span class="tree-label folder">src</span>
+                                <ul class="tree-children">
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">types</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">config</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">storage</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">services</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">context</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">auth.context.tsx</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">hooks</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">useAuth.ts</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">app</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
 
                     <h3>context/auth.context.tsx</h3>
@@ -2375,18 +2619,75 @@
                     <h2>providers/ — Why a Separate Folder?</h2>
                     <p>Context files define WHAT state exists. Provider files wrap the app and provide that state. Separating them keeps files focused and composable.</p>
 
-                    <div class="folder-tree">
-<span class="folder">src/</span>
-├── <span class="folder">types/</span>
-├── <span class="folder">config/</span>
-├── <span class="folder">storage/</span>
-├── <span class="folder">services/</span>
-├── <span class="folder">context/</span>
-├── <span class="folder">hooks/</span>
-├── <span class="folder">providers/</span>                   <span class="comment">← NEW</span>
-│   └── <span class="highlight-file">RootProvider.tsx</span>      <span class="comment">← NEW</span>
-└── <span class="folder">app/</span>
-    └── <span class="highlight-file">_layout.tsx</span>            <span class="comment">← Updated</span>
+                    <div class="folder-tree-container">
+                        <div class="folder-tree-header">
+                            <span class="folder-tree-title">📁 Stage 5: Providers</span>
+                            <button class="folder-tree-toggle" onclick="toggleAllFolders(this)">Expand All</button>
+                        </div>
+                        <ul class="folder-tree" role="tree">
+                            <li class="tree-item folder-item" role="treeitem">
+                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                <span class="tree-icon folder-icon">📂</span>
+                                <span class="tree-label folder">src</span>
+                                <ul class="tree-children">
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">types</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">config</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">storage</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">services</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">context</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">hooks</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">providers</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">RootProvider.tsx</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">app</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">_layout.tsx</span>
+                                                <span class="badge badge-updated">Updated</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
 
                     <h3>providers/RootProvider.tsx</h3>
@@ -2486,47 +2787,223 @@
                     <p class="subtitle">Every folder now exists. The architecture is production-ready.</p>
 
                     <h2>The Final Folder Structure</h2>
-                    <div class="folder-tree">
-<span class="folder">src/</span>
-├── <span class="folder">app/</span>                         <span class="comment">← Expo Router screens</span>
-│   ├── <span class="file-tsx">_layout.tsx</span>            <span class="comment">← Root layout with providers</span>
-│   ├── <span class="file-tsx">index.tsx</span>              <span class="comment">← Login screen</span>
-│   ├── <span class="file-tsx">register.tsx</span>           <span class="comment">← Register screen</span>
-│   ├── <span class="file-tsx">forgot-password.tsx</span>
-│   ├── <span class="folder">(home)/</span>
-│   │   ├── <span class="file-tsx">_layout.tsx</span>
-│   │   └── <span class="file-tsx">index.tsx</span>          <span class="comment">← Home screen</span>
-│   └── <span class="folder">(settings)/</span>
-├── <span class="folder">components/</span>                   <span class="comment">← Reusable UI components</span>
-│   └── <span class="folder">auth/</span>
-│       ├── <span class="file-tsx">LoginForm.tsx</span>
-│       ├── <span class="file-tsx">RegisterForm.tsx</span>
-│       └── <span class="file-tsx">SocialButtons.tsx</span>
-├── <span class="folder">hooks/</span>                        <span class="comment">← Custom React hooks</span>
-│   ├── <span class="file-ts">useAuth.ts</span>
-│   └── <span class="file-ts">useSession.ts</span>
-├── <span class="folder">context/</span>                      <span class="comment">← React Context definitions</span>
-│   └── <span class="file-tsx">auth.context.tsx</span>
-├── <span class="folder">providers/</span>                    <span class="comment">← Provider wrappers</span>
-│   └── <span class="file-tsx">RootProvider.tsx</span>
-├── <span class="folder">services/</span>                     <span class="comment">← External API communication</span>
-│   ├── <span class="file-ts">auth.service.ts</span>
-│   └── <span class="file-ts">user.service.ts</span>
-├── <span class="folder">repositories/</span>                 <span class="comment">← Data access layer</span>
-│   └── <span class="file-ts">auth.repository.ts</span>
-├── <span class="folder">storage/</span>                      <span class="comment">← Secure local storage</span>
-│   └── <span class="file-ts">auth.storage.ts</span>
-├── <span class="folder">types/</span>                        <span class="comment">← TypeScript type definitions</span>
-│   └── <span class="file-ts">auth.types.ts</span>
-├── <span class="folder">constants/</span>                    <span class="comment">← App-wide constants</span>
-│   └── <span class="file-ts">auth.constants.ts</span>
-├── <span class="folder">config/</span>                       <span class="comment">← Configuration files</span>
-│   └── <span class="file-ts">firebase.ts</span>
-├── <span class="folder">utils/</span>                        <span class="comment">← Utility functions</span>
-│   └── <span class="file-ts">validation.ts</span>
-├── <span class="folder">navigation/</span>                   <span class="comment">← Navigation configuration</span>
-│   └── <span class="file-ts">auth.navigation.ts</span>
-└── <span class="folder">assets/</span>                       <span class="comment">← Images, fonts, icons</span>
+                    <div class="folder-tree-container">
+                        <div class="folder-tree-header">
+                            <span class="folder-tree-title">📁 Stage 6: Complete Architecture</span>
+                            <button class="folder-tree-toggle" onclick="toggleAllFolders(this)">Expand All</button>
+                        </div>
+                        <ul class="folder-tree" role="tree">
+                            <li class="tree-item folder-item" role="treeitem">
+                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                <span class="tree-icon folder-icon">📂</span>
+                                <span class="tree-label folder">src</span>
+                                <ul class="tree-children">
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">app</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">_layout.tsx</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">index.tsx</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">register.tsx</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">forgot-password.tsx</span>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">(home)</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">_layout.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">index.tsx</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">(settings)</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">components</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">auth</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">LoginForm.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">RegisterForm.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">SocialButtons.tsx</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">hooks</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">useAuth.ts</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">useSession.ts</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">context</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">auth.context.tsx</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">providers</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">RootProvider.tsx</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">services</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.service.ts</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">user.service.ts</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">repositories</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.repository.ts</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">storage</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.storage.ts</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">types</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.types.ts</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">constants</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.constants.ts</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">config</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">firebase.ts</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">utils</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">validation.ts</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">navigation</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.navigation.ts</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">assets</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
 
                     <h2>The Dependency Graph</h2>
@@ -4673,73 +5150,351 @@ npm install @react-native-firebase/app @react-native-firebase/auth
                     <p class="subtitle">Watch the project folder structure grow as authentication features are added.</p>
 
                     <h2>V1 — Simple Login</h2>
-                    <div class="folder-tree">
-<span class="folder">src/</span>
-├── <span class="folder">app/</span>
-│   ├── <span class="file-tsx">_layout.tsx</span>
-│   ├── <span class="file-tsx">index.tsx</span>            <span class="comment">← Login screen</span>
-│   └── <span class="file-tsx">home.tsx</span>
-└── <span class="folder">services/</span>
-    └── <span class="file-ts">auth.service.ts</span>      <span class="comment">← Firebase calls</span>
+                    <div class="folder-tree-container">
+                        <div class="folder-tree-header">
+                            <span class="folder-tree-title">📁 Version 1</span>
+                            <button class="folder-tree-toggle" onclick="toggleAllFolders(this)">Expand All</button>
+                        </div>
+                        <ul class="folder-tree" role="tree">
+                            <li class="tree-item folder-item" role="treeitem">
+                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                <span class="tree-icon folder-icon">📂</span>
+                                <span class="tree-label folder">src</span>
+                                <ul class="tree-children">
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">app</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">_layout.tsx</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">index.tsx</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">home.tsx</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">services</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.service.ts</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
 
                     <h2>V2 — With Types & Storage</h2>
-                    <div class="folder-tree">
-<span class="folder">src/</span>
-├── <span class="folder">types/</span>                       <span class="new">+ NEW</span>
-│   └── <span class="new">auth.types.ts</span>
-├── <span class="folder">config/</span>                      <span class="new">+ NEW</span>
-│   └── <span class="new">firebase.ts</span>
-├── <span class="folder">storage/</span>                     <span class="new">+ NEW</span>
-│   └── <span class="new">auth.storage.ts</span>
-├── <span class="folder">services/</span>
-│   └── <span class="file-ts">auth.service.ts</span>
-└── <span class="folder">app/</span>
+                    <div class="folder-tree-container">
+                        <div class="folder-tree-header">
+                            <span class="folder-tree-title">📁 Version 2</span>
+                            <button class="folder-tree-toggle" onclick="toggleAllFolders(this)">Expand All</button>
+                        </div>
+                        <ul class="folder-tree" role="tree">
+                            <li class="tree-item folder-item" role="treeitem">
+                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                <span class="tree-icon folder-icon">📂</span>
+                                <span class="tree-label folder">src</span>
+                                <ul class="tree-children">
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">types</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.types.ts</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">config</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">firebase.ts</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">storage</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.storage.ts</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">services</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">auth.service.ts</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">app</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
 
                     <h2>V3 — With Context & Hooks</h2>
-                    <div class="folder-tree">
-<span class="folder">src/</span>
-├── <span class="folder">types/</span>
-├── <span class="folder">config/</span>
-├── <span class="folder">storage/</span>
-├── <span class="folder">services/</span>
-├── <span class="folder">context/</span>                    <span class="new">+ NEW</span>
-│   └── <span class="new">auth.context.tsx</span>
-├── <span class="folder">hooks/</span>                      <span class="new">+ NEW</span>
-│   └── <span class="new">useAuth.ts</span>
-└── <span class="folder">app/</span>
+                    <div class="folder-tree-container">
+                        <div class="folder-tree-header">
+                            <span class="folder-tree-title">📁 Version 3</span>
+                            <button class="folder-tree-toggle" onclick="toggleAllFolders(this)">Expand All</button>
+                        </div>
+                        <ul class="folder-tree" role="tree">
+                            <li class="tree-item folder-item" role="treeitem">
+                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                <span class="tree-icon folder-icon">📂</span>
+                                <span class="tree-label folder">src</span>
+                                <ul class="tree-children">
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">types</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">config</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">storage</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">services</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">context</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">auth.context.tsx</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">hooks</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-ts">📄</span>
+                                                <span class="tree-label file-ts">useAuth.ts</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">app</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
 
                     <h2>V4 — Production Architecture</h2>
-                    <div class="folder-tree">
-<span class="folder">src/</span>
-├── <span class="folder">types/</span>
-├── <span class="folder">config/</span>
-├── <span class="folder">constants/</span>                  <span class="new">+ NEW</span>
-├── <span class="folder">utils/</span>                      <span class="new">+ NEW</span>
-├── <span class="folder">storage/</span>
-├── <span class="folder">services/</span>
-├── <span class="folder">repositories/</span>               <span class="new">+ NEW</span>
-├── <span class="folder">context/</span>
-├── <span class="folder">hooks/</span>
-├── <span class="folder">providers/</span>                  <span class="new">+ NEW</span>
-│   └── <span class="new">RootProvider.tsx</span>
-├── <span class="folder">components/</span>                 <span class="new">+ NEW</span>
-│   └── <span class="folder">auth/</span>
-│       ├── <span class="new">LoginForm.tsx</span>
-│       └── <span class="new">RegisterForm.tsx</span>
-├── <span class="folder">navigation/</span>                 <span class="new">+ NEW</span>
-├── <span class="folder">assets/</span>
-└── <span class="folder">app/</span>
-    ├── <span class="file-tsx">_layout.tsx</span>
-    ├── <span class="file-tsx">index.tsx</span>
-    ├── <span class="new">register.tsx</span>
-    ├── <span class="new">forgot-password.tsx</span>
-    ├── <span class="folder">(home)/</span>
-    │   └── <span class="file-tsx">index.tsx</span>
-    └── <span class="folder">(settings)/</span>
-        └── <span class="file-tsx">index.tsx</span>
+                    <div class="folder-tree-container">
+                        <div class="folder-tree-header">
+                            <span class="folder-tree-title">📁 Version 4 (Production)</span>
+                            <button class="folder-tree-toggle" onclick="toggleAllFolders(this)">Expand All</button>
+                        </div>
+                        <ul class="folder-tree" role="tree">
+                            <li class="tree-item folder-item" role="treeitem">
+                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                <span class="tree-icon folder-icon">📂</span>
+                                <span class="tree-label folder">src</span>
+                                <ul class="tree-children">
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">types</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">config</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">constants</span>
+                                        <span class="badge badge-new">NEW</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">utils</span>
+                                        <span class="badge badge-new">NEW</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">storage</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">services</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">repositories</span>
+                                        <span class="badge badge-new">NEW</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">context</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">hooks</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">providers</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">RootProvider.tsx</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">components</span>
+                                        <span class="badge badge-new">NEW</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">auth</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">LoginForm.tsx</span>
+                                                        <span class="badge badge-new">NEW</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">RegisterForm.tsx</span>
+                                                        <span class="badge badge-new">NEW</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">navigation</span>
+                                        <span class="badge badge-new">NEW</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">assets</span>
+                                    </li>
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">app</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">_layout.tsx</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">index.tsx</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">register.tsx</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                            <li class="tree-item file-item" role="treeitem">
+                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                <span class="tree-label file-tsx">forgot-password.tsx</span>
+                                                <span class="badge badge-new">NEW</span>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">(home)</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">index.tsx</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">(settings)</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">index.tsx</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
 
                     <div class="summary-box">
@@ -5123,80 +5878,367 @@ npm install @react-native-firebase/app @react-native-firebase/auth
                     <p>A complete authentication system with all features integrated, following every architectural principle from this guide.</p>
 
                     <h2>Complete Folder Structure</h2>
-                    <div class="folder-tree">
-<span class="folder">auth-app/</span>
-├── <span class="folder">src/</span>
-│   ├── <span class="folder">app/</span>
-│   │   ├── <span class="file-tsx">_layout.tsx</span>
-│   │   ├── <span class="file-tsx">index.tsx</span>            <span class="comment">← Login</span>
-│   │   ├── <span class="file-tsx">register.tsx</span>
-│   │   ├── <span class="file-tsx">forgot-password.tsx</span>
-│   │   ├── <span class="file-tsx">reset-password.tsx</span>
-│   │   ├── <span class="file-tsx">verify-email.tsx</span>
-│   │   ├── <span class="file-tsx">otp.tsx</span>
-│   │   ├── <span class="folder">(home)/</span>
-│   │   │   ├── <span class="file-tsx">_layout.tsx</span>
-│   │   │   └── <span class="file-tsx">index.tsx</span>
-│   │   ├── <span class="folder">(settings)/</span>
-│   │   │   ├── <span class="file-tsx">_layout.tsx</span>
-│   │   │   ├── <span class="file-tsx">index.tsx</span>
-│   │   │   ├── <span class="file-tsx">change-password.tsx</span>
-│   │   │   ├── <span class="file-tsx">update-email.tsx</span>
-│   │   │   └── <span class="file-tsx">delete-account.tsx</span>
-│   │   ├── <span class="folder">(profile)/</span>
-│   │   └── <span class="folder">(admin)/</span>
-│   │       └── <span class="file-tsx">index.tsx</span>
-│   ├── <span class="folder">components/</span>
-│   │   ├── <span class="folder">auth/</span>
-│   │   │   ├── <span class="file-tsx">LoginForm.tsx</span>
-│   │   │   ├── <span class="file-tsx">RegisterForm.tsx</span>
-│   │   │   ├── <span class="file-tsx">SocialButtons.tsx</span>
-│   │   │   ├── <span class="file-tsx">OtpInput.tsx</span>
-│   │   │   └── <span class="file-tsx">ProtectedRoute.tsx</span>
-│   │   └── <span class="folder">ui/</span>
-│   │       ├── <span class="file-tsx">Button.tsx</span>
-│   │       ├── <span class="file-tsx">Input.tsx</span>
-│   │       ├── <span class="file-tsx">LoadingSpinner.tsx</span>
-│   │       └── <span class="file-tsx">ErrorMessage.tsx</span>
-│   ├── <span class="folder">hooks/</span>
-│   │   ├── <span class="file-ts">useAuth.ts</span>
-│   │   ├── <span class="file-ts">useSession.ts</span>
-│   │   ├── <span class="file-ts">useTokenRefresh.ts</span>
-│   │   └── <span class="file-ts">useRole.ts</span>
-│   ├── <span class="folder">context/</span>
-│   │   ├── <span class="file-tsx">auth.context.tsx</span>
-│   │   └── <span class="file-tsx">profile.context.tsx</span>
-│   ├── <span class="folder">providers/</span>
-│   │   ├── <span class="file-tsx">RootProvider.tsx</span>
-│   │   └── <span class="file-tsx">ThemeProvider.tsx</span>
-│   ├── <span class="folder">services/</span>
-│   │   ├── <span class="file-ts">auth.service.ts</span>
-│   │   ├── <span class="file-ts">user.service.ts</span>
-│   │   └── <span class="file-ts">storage.service.ts</span>
-│   ├── <span class="folder">repositories/</span>
-│   │   ├── <span class="file-ts">auth.repository.ts</span>
-│   │   └── <span class="file-ts">user.repository.ts</span>
-│   ├── <span class="folder">storage/</span>
-│   │   ├── <span class="file-ts">auth.storage.ts</span>
-│   │   └── <span class="file-ts">settings.storage.ts</span>
-│   ├── <span class="folder">types/</span>
-│   │   ├── <span class="file-ts">auth.types.ts</span>
-│   │   ├── <span class="file-ts">user.types.ts</span>
-│   │   └── <span class="file-ts">navigation.types.ts</span>
-│   ├── <span class="folder">constants/</span>
-│   │   └── <span class="file-ts">auth.constants.ts</span>
-│   ├── <span class="folder">config/</span>
-│   │   ├── <span class="file-ts">firebase.ts</span>
-│   │   └── <span class="file-ts">google-auth.ts</span>
-│   ├── <span class="folder">utils/</span>
-│   │   └── <span class="file-ts">validation.ts</span>
-│   ├── <span class="folder">navigation/</span>
-│   │   └── <span class="file-ts">auth.navigation.ts</span>
-│   └── <span class="folder">assets/</span>
-├── <span class="file-json">app.json</span>
-├── <span class="file-json">package.json</span>
-├── <span class="file-ts">tsconfig.json</span>
-└── <span class="file-json">.env</span>                          <span class="comment">← API keys (gitignored)</span>
+                    <div class="folder-tree-container">
+                        <div class="folder-tree-header">
+                            <span class="folder-tree-title">📁 Final Production Project</span>
+                            <button class="folder-tree-toggle" onclick="toggleAllFolders(this)">Expand All</button>
+                        </div>
+                        <ul class="folder-tree" role="tree">
+                            <li class="tree-item folder-item" role="treeitem">
+                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                <span class="tree-icon folder-icon">📂</span>
+                                <span class="tree-label folder">auth-app</span>
+                                <ul class="tree-children">
+                                    <li class="tree-item folder-item" role="treeitem">
+                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                        <span class="tree-icon folder-icon">📂</span>
+                                        <span class="tree-label folder">src</span>
+                                        <ul class="tree-children">
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">app</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">_layout.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">index.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">register.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">forgot-password.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">reset-password.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">verify-email.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">otp.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item folder-item" role="treeitem">
+                                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                        <span class="tree-icon folder-icon">📂</span>
+                                                        <span class="tree-label folder">(home)</span>
+                                                        <ul class="tree-children">
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">_layout.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">index.tsx</span>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li class="tree-item folder-item" role="treeitem">
+                                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                        <span class="tree-icon folder-icon">📂</span>
+                                                        <span class="tree-label folder">(settings)</span>
+                                                        <ul class="tree-children">
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">_layout.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">index.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">change-password.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">update-email.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">delete-account.tsx</span>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li class="tree-item folder-item" role="treeitem">
+                                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                        <span class="tree-icon folder-icon">📂</span>
+                                                        <span class="tree-label folder">(profile)</span>
+                                                    </li>
+                                                    <li class="tree-item folder-item" role="treeitem">
+                                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                        <span class="tree-icon folder-icon">📂</span>
+                                                        <span class="tree-label folder">(admin)</span>
+                                                        <ul class="tree-children">
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">index.tsx</span>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">components</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item folder-item" role="treeitem">
+                                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                        <span class="tree-icon folder-icon">📂</span>
+                                                        <span class="tree-label folder">auth</span>
+                                                        <ul class="tree-children">
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">LoginForm.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">RegisterForm.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">SocialButtons.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">OtpInput.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">ProtectedRoute.tsx</span>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li class="tree-item folder-item" role="treeitem">
+                                                        <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                        <span class="tree-icon folder-icon">📂</span>
+                                                        <span class="tree-label folder">ui</span>
+                                                        <ul class="tree-children">
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">Button.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">Input.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">LoadingSpinner.tsx</span>
+                                                            </li>
+                                                            <li class="tree-item file-item" role="treeitem">
+                                                                <span class="tree-icon file-icon file-tsx">📄</span>
+                                                                <span class="tree-label file-tsx">ErrorMessage.tsx</span>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">hooks</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">useAuth.ts</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">useSession.ts</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">useTokenRefresh.ts</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">useRole.ts</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">context</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">auth.context.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">profile.context.tsx</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">providers</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">RootProvider.tsx</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-tsx">📄</span>
+                                                        <span class="tree-label file-tsx">ThemeProvider.tsx</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">services</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">auth.service.ts</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">user.service.ts</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">storage.service.ts</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">repositories</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">auth.repository.ts</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">user.repository.ts</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">storage</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">auth.storage.ts</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">settings.storage.ts</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">types</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">auth.types.ts</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">user.types.ts</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">navigation.types.ts</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">constants</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">auth.constants.ts</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">config</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">firebase.ts</span>
+                                                    </li>
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">google-auth.ts</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">utils</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">validation.ts</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">navigation</span>
+                                                <ul class="tree-children">
+                                                    <li class="tree-item file-item" role="treeitem">
+                                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                                        <span class="tree-label file-ts">auth.navigation.ts</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="tree-item folder-item" role="treeitem">
+                                                <span class="tree-toggle" onclick="toggleFolder(this)"></span>
+                                                <span class="tree-icon folder-icon">📂</span>
+                                                <span class="tree-label folder">assets</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="tree-item file-item" role="treeitem">
+                                        <span class="tree-icon file-icon file-json">📄</span>
+                                        <span class="tree-label file-json">app.json</span>
+                                    </li>
+                                    <li class="tree-item file-item" role="treeitem">
+                                        <span class="tree-icon file-icon file-json">📄</span>
+                                        <span class="tree-label file-json">package.json</span>
+                                    </li>
+                                    <li class="tree-item file-item" role="treeitem">
+                                        <span class="tree-icon file-icon file-ts">📄</span>
+                                        <span class="tree-label file-ts">tsconfig.json</span>
+                                    </li>
+                                    <li class="tree-item file-item" role="treeitem">
+                                        <span class="tree-icon file-icon file-json">📄</span>
+                                        <span class="tree-label file-json">.env</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
 
                     <h2>Feature Checklist</h2>
@@ -5280,6 +6322,17 @@ npm install @react-native-firebase/app @react-native-firebase/auth
     <!-- Back to Top -->
     <button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
+    <!-- Chapter Navigation (Floating Bottom Bar) -->
+    <nav class="chapter-nav chapter-nav-bottom" id="chapter-nav">
+        <button class="chapter-nav-btn" id="chapter-prev" onclick="navigateChapter('prev')">
+            <span class="nav-arrow">←</span> Previous
+        </button>
+        <span class="chapter-nav-title" id="chapter-nav-title"></span>
+        <button class="chapter-nav-btn" id="chapter-next" onclick="navigateChapter('next')">
+            Next <span class="nav-arrow">→</span>
+        </button>
+    </nav>
+
     <!-- ════════════════════════════════════════════════════
          JAVASCRIPT
          ════════════════════════════════════════════════════ -->
@@ -5323,10 +6376,43 @@ npm install @react-native-firebase/app @react-native-firebase/auth
         /* ── Chapter Navigation ── */
         const chapters = document.querySelectorAll('.chapter');
         const sidebarLinks = document.querySelectorAll('.sidebar-link[data-chapter]');
+        const chapterIds = [];
+        const chapterTitles = [];
 
-        window.showChapter = function(id) {
-            chapters.forEach(ch => ch.classList.remove('active'));
-            sidebarLinks.forEach(link => link.classList.remove('active'));
+        // Build chapter list for navigation
+        sidebarLinks.forEach(function(link) {
+            const id = link.getAttribute('data-chapter');
+            if (id) {
+                chapterIds.push(id);
+                chapterTitles.push(link.textContent.trim());
+            }
+        });
+
+        let currentChapterIndex = 0;
+        const chapterNav = document.getElementById('chapter-nav');
+        const chapterNavTitle = document.getElementById('chapter-nav-title');
+        const chapterPrevBtn = document.getElementById('chapter-prev');
+        const chapterNextBtn = document.getElementById('chapter-next');
+
+        function updateChapterNav(id) {
+            currentChapterIndex = chapterIds.indexOf(id);
+            if (currentChapterIndex === -1) currentChapterIndex = 0;
+
+            chapterNavTitle.textContent = chapterTitles[currentChapterIndex] || '';
+
+            // Show/hide navigation based on chapter visibility
+            if (chapterIds.length > 1) {
+                chapterNav.classList.add('visible');
+            }
+
+            // Update button states
+            chapterPrevBtn.disabled = currentChapterIndex === 0;
+            chapterNextBtn.disabled = currentChapterIndex === chapterIds.length - 1;
+        }
+
+        window.showChapter = function(id, skipScroll) {
+            chapters.forEach(function(ch) { ch.classList.remove('active'); });
+            sidebarLinks.forEach(function(link) { link.classList.remove('active'); });
 
             const target = document.getElementById('chapter-' + id);
             if (target) {
@@ -5345,12 +6431,42 @@ npm install @react-native-firebase/app @react-native-firebase/auth
                 }
             }
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Update floating navigation
+            updateChapterNav(id);
+
+            // Save current chapter to localStorage
+            localStorage.setItem('currentChapter', id);
+            localStorage.setItem('currentChapterTitle', document.title);
+
+            if (!skipScroll) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
 
             // Close mobile sidebar
             sidebar.classList.remove('open');
             overlay.classList.remove('open');
         };
+
+        window.navigateChapter = function(direction) {
+            let newIndex = currentChapterIndex;
+            if (direction === 'prev' && currentChapterIndex > 0) {
+                newIndex = currentChapterIndex - 1;
+            } else if (direction === 'next' && currentChapterIndex < chapterIds.length - 1) {
+                newIndex = currentChapterIndex + 1;
+            }
+            if (newIndex !== currentChapterIndex) {
+                showChapter(chapterIds[newIndex]);
+            }
+        };
+
+        /* ── Restore chapter from localStorage on page load ── */
+        const savedChapter = localStorage.getItem('currentChapter');
+        if (savedChapter && document.getElementById('chapter-' + savedChapter)) {
+            showChapter(savedChapter, true);
+        } else {
+            // Default to first chapter
+            showChapter(chapterIds[0], true);
+        }
 
         /* ── Scroll Progress ── */
         const progressBar = document.getElementById('scroll-progress');
