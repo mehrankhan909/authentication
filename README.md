@@ -1,47 +1,196 @@
-<div align="center">
+# React Native Expo Authentication Architecture — Complete Guide
 
-# AuthApp
+> A single-file, interactive documentation website that teaches you **WHY** every authentication file exists, **WHEN** it should be created, **WHO** uses it, and **HOW** the entire system evolves from an empty project to a production-ready authentication architecture.
 
-### Complete Authentication System for React Native (Expo)
+---
 
-Login · Register · Logout · Persistent Sessions · Protected Routes
+## Table of Contents
 
-![Expo](https://img.shields.io/badge/Expo-54-000020?style=for-the-badge&logo=expo&logoColor=white)
-![React Native](https://img.shields.io/badge/React_Native-0.81-61DAFB?style=for-the-badge&logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/NativeWind-4.2-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-
-</div>
+- [Overview](#overview)
+- [What You'll Learn](#what-youll-learn)
+- [Who This Is For](#who-this-is-for)
+- [Features](#features)
+- [Content Coverage](#content-coverage)
+- [How to Use](#how-to-use)
+- [Project Structure](#project-structure)
+- [Technology Stack](#technology-stack)
+- [Architecture Overview](#architecture-overview)
+- [Chapter Index](#chapter-index)
+- [Provider Comparison](#provider-comparison)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
 ## Overview
 
-A full-featured authentication flow built with Expo Router and React Context. Supports registration, login, logout, token persistence, and automatic session restoration — all with a clean, layered architecture.
+Most authentication tutorials teach you **WHAT** to write. This guide teaches you **WHY** it exists.
 
-**Features:**
+This is a complete, self-contained HTML documentation website (no frameworks, no external dependencies) that covers every major authentication concept in React Native Expo — from the very first login screen to a full production architecture with MFA, role-based access, OAuth, token refresh, and more.
 
-- Register with name, email, and password
-- Login with email and password
-- Logout with session cleanup
-- Persistent login (survives app restarts)
-- Automatic route guarding (redirects based on auth state)
-- Mock API layer (swap with real backend anytime)
-- Cross-platform storage (SecureStore on native, localStorage on web)
+Everything lives in **one HTML file** — open it in any browser and start learning.
 
 ---
 
-## Tech Stack
+## What You'll Learn
 
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| Framework | **Expo 54** | Cross-platform build tooling |
-| Navigation | **Expo Router 6** | File-based routing |
-| UI | **React Native 0.81** | Mobile UI components |
-| Styling | **NativeWind 4** | Tailwind CSS for React Native |
-| State | **React Context** | Global auth state management |
-| Storage | **expo-secure-store** | Token persistence (encrypted) |
-| Types | **TypeScript 5.9** | Type safety |
+- **Architecture from Scratch** — how authentication architecture is born from nothing
+- **Dependency Graphs** — which files depend on which, who calls whom
+- **28 Auth Modules** — Login, Register, OAuth, MFA, Magic Links, Session Management
+- **File Creation Order** — the exact order to create auth files and WHY each must come first
+- **Provider Comparison** — Firebase vs Supabase vs Clerk vs Auth0 vs AWS Cognito
+- **Security Deep Dive** — JWT, refresh tokens, secure storage, OAuth, CSRF, replay attacks
+- **State Machine** — every auth state, who changes it, which components react
+- **Project Evolution** — watch the folder structure grow as features are added
+- **Production Best Practices** — the dos, don'ts, and production checklist
+- **Interview Questions** — common auth architecture interview Q&A
+
+---
+
+## Who This Is For
+
+| Level | What You'll Get |
+|-------|----------------|
+| **Beginner** | Every concept explained from scratch. No prior auth knowledge required. |
+| **Intermediate** | Understand WHY the architecture matters and how to make better decisions. |
+| **Senior** | Full system design perspective, provider comparisons, production patterns. |
+
+---
+
+## Features
+
+### Design & UX
+- Dark Mode / Light Mode with toggle
+- Responsive design (desktop, tablet, mobile)
+- Sidebar navigation with expandable sections
+- Search box with keyboard shortcut (Ctrl+K)
+- Breadcrumb navigation
+- Scroll progress bar
+- Smooth scrolling
+- Sticky sidebar
+- Back to top button
+
+### Learning Aids
+- Expandable/collapsible sections
+- Interactive cards
+- Animated flow diagrams (HTML/CSS)
+- Dependency diagrams
+- State machine visualizations
+- Folder tree explorer
+- Code tabs (Minimal / Production / Bad Example)
+- Syntax highlighting
+- Copy buttons on all code blocks
+- Notes, Warnings, Best Practices callouts
+- Do / Don't comparison boxes
+- Mini quizzes with explanations
+- Interview questions with answers
+- Key takeaways after every chapter
+- Hands-on exercises
+
+### Content
+- 50+ chapters across 8 major sections
+- 28 complete authentication modules
+- 6 provider comparison profiles
+- Full security deep dive
+- Complete final project with folder structure
+
+---
+
+## Content Coverage
+
+### Authentication Modules (28)
+
+| # | Module | Description |
+|---|--------|-------------|
+| 1 | Login | Email/password authentication |
+| 2 | Register | New account creation |
+| 3 | Logout | Secure session termination |
+| 4 | Forgot Password | Password recovery via email |
+| 5 | Reset Password | Setting a new password via deep link |
+| 6 | Email Verification | Confirming email ownership |
+| 7 | Phone Authentication | SMS-based login |
+| 8 | OTP Authentication | One-time password verification |
+| 9 | Google Sign In | OAuth with Google |
+| 10 | Apple Sign In | OAuth with Apple (App Store requirement) |
+| 11 | Facebook Login | OAuth with Facebook |
+| 12 | GitHub Login | OAuth with GitHub |
+| 13 | Anonymous Login | Trial accounts before signup |
+| 14 | Magic Link Login | Passwordless email-based auth |
+| 15 | Session Restore | Persisting login across restarts |
+| 16 | Refresh Token | Keeping sessions alive |
+| 17 | Auto Login | Automatic session restoration |
+| 18 | Session Expiration | Handling expired tokens |
+| 19 | Token Refresh | Proactive token renewal |
+| 20 | Delete Account | GDPR-compliant account removal |
+| 21 | Change Password | Authenticated password update |
+| 22 | Update Email | Changing account email |
+| 23 | Multi-factor Auth (MFA) | TOTP/SMS second factor |
+| 24 | Role Based Auth | Admin/Editor/Viewer access control |
+| 25 | Protected Routes | Auth-required navigation |
+| 26 | Guest Routes | Unauthenticated-only navigation |
+| 27 | Admin Routes | Admin-only navigation |
+| 28 | Profile Synchronization | Keeping user data in sync |
+
+### Folder Structure Explained
+
+| Folder | Purpose |
+|--------|---------|
+| `types/` | TypeScript type definitions |
+| `config/` | External service initialization |
+| `constants/` | Application-wide constants |
+| `utils/` | Pure utility functions |
+| `storage/` | Secure local data persistence |
+| `services/` | External API communication |
+| `repositories/` | Data access abstraction |
+| `context/` | React Context definitions |
+| `hooks/` | Custom React hooks |
+| `providers/` | Provider wrapper composition |
+| `components/` | Reusable UI components |
+| `screens/` (app/) | Page-level route components |
+| `navigation/` | Navigation configuration |
+| `assets/` | Images, fonts, icons |
+
+---
+
+## How to Use
+
+### Quick Start
+
+1. Clone or download this repository
+2. Open `index.html` in any modern browser
+3. Start reading from the **Home** page
+
+```bash
+# Option 1: Direct file open
+open index.html
+
+# Option 2: Local server (recommended for search)
+npx serve .
+# Then open http://localhost:3000
+
+# Option 3: Python
+python -m http.server 8000
+# Then open http://localhost:8000
+```
+
+### Navigation
+
+- **Sidebar** — Click any chapter to navigate directly
+- **Search** — Press `Ctrl+K` to search across all chapters
+- **Breadcrumbs** — Click to go back to parent sections
+- **Expandable sections** — Click headers to expand/collapse content
+- **Code blocks** — Click "Copy" to copy code to clipboard
+- **Quizzes** — Click an option to check your answer
+- **Theme toggle** — Click the moon/sun icon to switch themes
+
+### Recommended Reading Order
+
+1. **Getting Started** — Introduction, Philosophy
+2. **Architecture** — Stages 1-6 (Project Evolution)
+3. **Core Files** — Types, Config, Services, Storage, Context, Hooks, Providers, Components, Screens, Navigation
+4. **Auth Modules** — Login, Register, Logout (start here), then others as needed
+5. **Advanced Topics** — Provider Comparison, Security, Best Practices
+6. **Practice** — Interview Questions, Exercises, Final Project
 
 ---
 
@@ -49,246 +198,188 @@ A full-featured authentication flow built with Expo Router and React Context. Su
 
 ```
 AuthApp/
-├── app/                        # Routes (Expo Router)
-│   ├── _layout.tsx             # Root layout — wraps app in AuthProvider
-│   ├── index.tsx               # Entry gate — checks auth, redirects
-│   ├── (auth)/                 # Group: unauthenticated screens
-│   │   ├── login.tsx           # Login screen
-│   │   └── register.tsx        # Register screen
-│   └── (tabs)/                 # Group: authenticated screens
-│       ├── _layout.tsx         # Tab navigator
-│       └── index.tsx           # Home screen
-│
-├── context/                    # Global state
-│   └── authContext.tsx          # AuthProvider — user, login, register, logout
-│
-├── hooks/                      # Reusable logic
-│   └── useAuth.ts              # Shortcut to consume auth context
-│
-├── services/                   # API communication
-│   ├── auth.ts                 # Auth endpoints (login, register, getProfile)
-│   └── api.ts                  # Generic HTTP client with token header
-│
-├── types/                      # TypeScript definitions
-│   └── auth.ts                 # User, AuthResponse, AuthContextType
-│
-├── utils/                      # Pure helpers
-│   ├── storage.ts              # Token persistence (SecureStore / localStorage)
-│   └── validator.ts            # Input validation (email, password)
-│
-├── assets/                     # Static files (icons, splash)
-├── components/                 # Reusable UI components
-├── constants/                  # Static config values
-│
-├── auth-guide.html             # Interactive learning guide
-└── README.md
+├── index.html          # The complete documentation website (single file)
+├── README.md           # This file
+└── .gitignore          # Git ignore rules
 ```
 
 ---
 
-## How It Works
+## Technology Stack
 
-### Data Flow
+| Layer | Technology |
+|-------|-----------|
+| Structure | HTML5 |
+| Styling | CSS3 (Custom Properties, Grid, Flexbox) |
+| Interactivity | Vanilla JavaScript (ES6+) |
+| Syntax Highlighting | Custom CSS-based |
+| Icons | Unicode/Emoji (no icon libraries) |
+| External Dependencies | **None** |
 
-```
-Screen (app/)
-  → calls useAuth() hook
-    → reads from AuthContext
-      → calls service (services/auth.ts)
-        → service calls backend / mock
-          → returns { token, user }
-        ← token saved via storage util
-        ← user set in context state
-      ← context re-renders providers
-    ← hook returns new state
-  ← screen navigates based on auth state
-```
-
-### Auth States
-
-| State | `user` value | Token | Screen |
-|-------|-------------|-------|--------|
-| Not logged in | `null` | None | Login / Register |
-| Logged in | `{ id, email, name }` | Saved to storage | Home (Tabs) |
-| Logged out | `null` | Removed | Login |
-
-### On App Start
-
-```
-App launches
-  → AuthProvider mounts
-    → useEffect runs
-      → getToken() checks storage
-        → Token found → getProfile() → setUser(userData)
-        → No token → user stays null
-    → isLoading = false
-  → index.tsx re-renders
-    → user exists? → Redirect to /(tabs)
-    → no user?    → Redirect to /(auth)/login
-```
+**Zero dependencies.** The entire website is one self-contained HTML file.
 
 ---
 
-## Getting Started
+## Architecture Overview
 
-### Prerequisites
+The guide teaches this complete auth architecture:
 
-- [Node.js](https://nodejs.org/) 18+
-- [Expo CLI](https://docs.expo.dev/get-started/installation/) installed globally
-
-### Installation
-
-```bash
-# Clone the repository
-git clone <your-repo-url>
-cd AuthApp
-
-# Install dependencies
-npm install
-
-# Start the development server
-npx expo start
+```
+Screens (Login, Register, Home, Settings)
+    ↓ use
+Components (LoginForm, RegisterForm, ProtectedRoute)
+    ↓ call
+Hooks (useAuth, useSession, useTokenRefresh)
+    ↓ read from
+Context / Providers (AuthProvider, RootProvider)
+    ↓ delegates to
+Services (auth.service, user.service)
+    ↓ uses
+Repositories (auth.repository, user.repository)
+    ↓ persists via
+Storage (auth.storage) + SDK (Firebase/Supabase)
 ```
 
-### Running
+### File Creation Order
 
-```bash
-# Web
-npm run web
+1. `types/` — Define contracts first
+2. `config/` — Initialize external services
+3. `constants/` — Application-wide values
+4. `storage/` — Secure persistence layer
+5. `services/` — Business logic layer
+6. `repositories/` — Data access abstraction (optional)
+7. `context/` — Global state definitions
+8. `hooks/` — Clean API for components
+9. `providers/` — Compose context providers
+10. `components/` — Reusable UI
+11. `screens/` (app/) — Page-level routes
+12. **Protect navigation** — Wire up auth guards
 
-# Android
-npm run android
-
-# iOS
-npm run ios
-```
+Each step exists because the previous step created a need for it.
 
 ---
 
-## API Layer
+## Chapter Index
 
-The app uses a mock API that simulates real network calls. To connect to a real backend:
+### Getting Started
+- Introduction
+- Philosophy
 
-### Mock Behavior
+### Architecture
+- Stage 1: Empty Project
+- Stage 2: First Login
+- Stage 3: Services Layer
+- Stage 4: Hooks & Context
+- Stage 5: Providers & Navigation Guard
+- Stage 6: Full Architecture
+- Complete Folder Structure
+- Folder Evolution Timeline
+- File Creation Order
+- Authentication State Machine
 
-```typescript
-// services/auth.ts
-// Register: always succeeds, returns mock token + user
-// Login: accepts any email with password "password"
-// getProfile: returns mock user data
-```
+### Core Files
+- `types/` — Type Definitions
+- `constants/` — Application Constants
+- `config/` — Service Configuration
+- `services/` — API Communication
+- `repositories/` — Data Access Layer
+- `storage/` — Secure Storage
+- `context/` — React Context
+- `hooks/` — Custom Hooks
+- `providers/` — Provider Composition
+- `components/` — Reusable UI
+- `screens/` — Page Components
+- `navigation/` — Auth-Aware Navigation
 
-### Connecting a Real Backend
+### Auth Modules
+- Login, Register, Logout
+- Forgot Password, Reset Password
+- Email Verification
+- Phone Auth, OTP Auth
+- Google, Apple, Facebook, GitHub Sign In
+- Anonymous Login, Magic Link
+- Session Restore, Refresh Token, Auto Login
+- Session Expiration
+- Delete Account, Change Password, Update Email
+- Profile Synchronization
+- Multi-factor Authentication
+- Role-Based Auth
+- Protected Routes, Guest Routes, Admin Routes
 
-Replace the mock functions in `services/auth.ts`:
+### Dependency Graphs
+- Login Dependencies
+- Register Dependencies
+- Full Dependency Map
 
-```typescript
-const API_URL = 'https://your-api.com';
-
-export async function loginUser(email: string, password: string) {
-    const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-    });
-    if (!response.ok) throw new Error('Invalid credentials');
-    return response.json(); // { token, user }
-}
-
-export async function registerUser(name: string, email: string, password: string) {
-    const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-    });
-    if (!response.ok) throw new Error('Registration failed');
-    return response.json(); // { token, user }
-}
-```
-
-Then update `services/api.ts` to point to your real API URL.
-
----
-
-## Adding New Screens
-
-### Authenticated Screen
-
-Create a file in `app/(tabs)/`:
-
-```tsx
-// app/(tabs)/profile.tsx
-import { useAuth } from '../../hooks/useAuth';
-
-export default function Profile() {
-    const { user, logout } = useAuth();
-
-    return (
-        <View>
-            <Text>{user?.name}</Text>
-            <Button title="Logout" onPress={logout} />
-        </View>
-    );
-}
-```
-
-### Unauthenticated Screen
-
-Create a file in `app/(auth)/`:
-
-```tsx
-// app/(auth)/forgot-password.tsx
-import { Link } from 'expo-router';
-
-export default function ForgotPassword() {
-    return (
-        <View>
-            <Text>Reset your password</Text>
-            <Link href="/(auth)/login">Back to Login</Link>
-        </View>
-    );
-}
-```
+### Advanced Topics
+- Provider Comparison (Firebase, Supabase, Clerk, Auth0, Cognito)
+- Security Deep Dive
+- Best Practices
+- Interview Questions
+- Exercises
+- Final Project
 
 ---
 
-## Architecture Principles
+## Provider Comparison
 
-| Principle | How It's Applied |
-|-----------|-----------------|
-| **Single Responsibility** | Each file does exactly one thing |
-| **Separation of Concerns** | UI / Logic / State / Network / Storage are separate |
-| **DRY** | `useAuth()` hook eliminates repeated context logic |
-| **Type Safety** | TypeScript interfaces for all data shapes |
-| **Platform Awareness** | Storage utility handles native vs web differences |
-| **Fail Gracefully** | AuthProvider catches invalid tokens and cleans up |
+| Feature | Firebase | Supabase | Clerk | Auth0 | AWS Cognito |
+|---------|----------|----------|-------|-------|-------------|
+| Setup | Easy | Easy | Easiest | Medium | Complex |
+| Free Tier | Generous | Generous | 10K MAU | 7K MAU | 50K MAU |
+| Email/Password | ✅ | ✅ | ✅ | ✅ | ✅ |
+| OAuth | ✅ All | ✅ All | ✅ All | ✅ All | ✅ All |
+| Phone Auth | ✅ | ✅ | ✅ | ✅ | ✅ |
+| MFA | ✅ TOTP | ✅ TOTP | ✅ Built-in UI | ✅ Multi | ✅ SMS/TOTP |
+| Offline Support | ✅ Firestore | ❌ | ❌ | ❌ | ❌ |
+| Best For | Most apps | Open source | Rapid dev | Enterprise | AWS ecosystem |
 
 ---
 
-## Learning Resources
+## Key Security Concepts Covered
 
-The `auth-guide.html` file in the project root is an interactive learning guide with:
+- JWT (JSON Web Token) structure and lifecycle
+- Access Token vs Refresh Token
+- Token rotation and expiration
+- Secure storage with `expo-secure-store`
+- Why NOT to use `AsyncStorage` for tokens
+- OAuth 2.0 flow
+- CSRF, XSS, replay attack prevention
+- Brute force protection
+- Environment variable management
+- Production security checklist
 
-- Complete flow diagrams for register, login, and logout
-- Line-by-line code explanations
-- Route guard logic breakdown
-- A working browser demo that simulates the same auth logic
+---
 
-Open it in your browser:
+## Contributing
 
-```bash
-# macOS
-open auth-guide.html
+This is a learning resource. If you find:
+- **Errors** in code examples
+- **Outdated** information
+- **Missing** concepts
+- **Improvements** to explanations
 
-# Linux
-xdg-open auth-guide.html
-
-# Windows
-start auth-guide.html
-```
+Please open an issue or submit a pull request.
 
 ---
 
 ## License
 
-MIT
+This project is open source and available for educational use.
+
+---
+
+## Acknowledgments
+
+Built as a comprehensive learning resource for the React Native Expo community. Designed to feel like a mixture of:
+
+- React Native Documentation
+- Expo Documentation
+- System Design Course
+- Clean Architecture Course
+- Interactive Programming Book
+- Software Engineering Roadmap
+
+---
+
+**Start learning →** Open `index.html` in your browser.
